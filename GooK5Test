@@ -336,43 +336,43 @@ Impacto.Themes = {
 		Shadow = Color3.fromRGB(15, 23, 42)
 	},
 	Impacto = {
-		Window = Color3.fromRGB(248, 250, 252),
-		Topbar = Color3.fromRGB(255, 255, 255),
-		Sidebar = Color3.fromRGB(255, 255, 255),
-		Page = Color3.fromRGB(245, 247, 251),
-		Card = Color3.fromRGB(255, 255, 255),
-		CardAlt = Color3.fromRGB(248, 250, 252),
-		Text = Color3.fromRGB(31, 41, 55),
-		Muted = Color3.fromRGB(100, 116, 139),
-		Subtle = Color3.fromRGB(148, 163, 184),
-		Border = Color3.fromRGB(226, 232, 240),
-		BorderStrong = Color3.fromRGB(203, 213, 225),
-		Primary = Color3.fromRGB(66, 133, 244),
-		PrimaryHover = Color3.fromRGB(52, 103, 209),
-		PrimarySoft = Color3.fromRGB(232, 240, 254),
-		Success = Color3.fromRGB(52, 168, 83),
-		Warning = Color3.fromRGB(251, 188, 4),
-		Danger = Color3.fromRGB(234, 67, 53),
-		Input = Color3.fromRGB(255, 255, 255),
-		Hover = Color3.fromRGB(241, 245, 249),
-		Shadow = Color3.fromRGB(15, 23, 42),
-		Button = Color3.fromRGB(66, 133, 244),
-		ButtonHover = Color3.fromRGB(52, 103, 209),
-		Toggle = Color3.fromRGB(52, 168, 83),
-		ToggleHover = Color3.fromRGB(36, 130, 63),
-		Slider = Color3.fromRGB(251, 188, 4),
-		SliderText = Color3.fromRGB(174, 122, 0),
-		Dropdown = Color3.fromRGB(234, 67, 53),
-		DropdownSoft = Color3.fromRGB(252, 232, 230),
-		InputAccent = Color3.fromRGB(66, 133, 244),
-		Keybind = Color3.fromRGB(234, 67, 53),
-		TabAccents = {
-			{Color = Color3.fromRGB(66, 133, 244), Soft = Color3.fromRGB(232, 240, 254)},
-			{Color = Color3.fromRGB(234, 67, 53), Soft = Color3.fromRGB(252, 232, 230)},
-			{Color = Color3.fromRGB(251, 188, 4), Soft = Color3.fromRGB(254, 247, 224)},
-			{Color = Color3.fromRGB(52, 168, 83), Soft = Color3.fromRGB(230, 244, 234)}
-		}
-	},
+    Window = Color3.fromRGB(20, 20, 25),        -- Preto fosco/Escuro profundo
+    Topbar = Color3.fromRGB(15, 15, 18),        -- Preto ligeiramente mais escuro
+    Sidebar = Color3.fromRGB(15, 15, 18),       -- Preto emparelhado com a Topbar
+    Page = Color3.fromRGB(25, 25, 30),          -- Grafite escuro
+    Card = Color3.fromRGB(30, 30, 35),          -- Preto suavizado para contraste
+    CardAlt = Color3.fromRGB(35, 35, 40),       -- Variante do card
+    Text = Color3.fromRGB(240, 245, 255),       -- Branco azulado para leitura perfeita no escuro
+    Muted = Color3.fromRGB(140, 150, 170),      -- Cinza azulado fosco
+    Subtle = Color3.fromRGB(100, 110, 130),     -- Cinza escuro sutil
+    Border = Color3.fromRGB(45, 45, 55),        -- Borda escura discreta
+    BorderStrong = Color3.fromRGB(60, 65, 80),  -- Borda em destaque
+    Primary = Color3.fromRGB(135, 206, 250),    -- Azul Claro (Light Sky Blue)
+    PrimaryHover = Color3.fromRGB(100, 180, 240),-- Azul Claro mais intenso no hover
+    PrimarySoft = Color3.fromRGB(30, 50, 70),   -- Azul escuro de fundo para destacar elementos soft
+    Success = Color3.fromRGB(52, 168, 83),      -- Mantido para utilidade (Verde)
+    Warning = Color3.fromRGB(251, 188, 4),      -- Mantido para utilidade (Amarelo)
+    Danger = Color3.fromRGB(234, 67, 53),       -- Mantido para utilidade (Vermelho)
+    Input = Color3.fromRGB(35, 35, 45),         -- Fundo do input escuro
+    Hover = Color3.fromRGB(45, 45, 55),         -- Efeito hover padrão
+    Shadow = Color3.fromRGB(5, 5, 10),          -- Sombra preta pura
+    Button = Color3.fromRGB(135, 206, 250),     -- Botão Azul Claro
+    ButtonHover = Color3.fromRGB(100, 180, 240),-- Botão Hover Azul Claro
+    Toggle = Color3.fromRGB(135, 206, 250),     -- Toggle Azul Claro
+    ToggleHover = Color3.fromRGB(100, 180, 240),
+    Slider = Color3.fromRGB(135, 206, 250),     -- Slider Azul Claro
+    SliderText = Color3.fromRGB(240, 245, 255), 
+    Dropdown = Color3.fromRGB(35, 35, 45),
+    DropdownSoft = Color3.fromRGB(45, 45, 55),
+    InputAccent = Color3.fromRGB(135, 206, 250),-- Borda do Input ativa em Azul Claro
+    Keybind = Color3.fromRGB(135, 206, 250),
+    TabAccents = {
+        {Color = Color3.fromRGB(135, 206, 250), Soft = Color3.fromRGB(30, 50, 70)}, -- Foco no Azul Claro
+        {Color = Color3.fromRGB(100, 180, 240), Soft = Color3.fromRGB(25, 40, 60)}, 
+        {Color = Color3.fromRGB(173, 216, 230), Soft = Color3.fromRGB(35, 55, 75)}, 
+        {Color = Color3.fromRGB(240, 245, 255), Soft = Color3.fromRGB(40, 45, 55)}
+    }
+},
 	Red = {
 		Window = Color3.fromRGB(248, 250, 252),
 		Topbar = Color3.fromRGB(255, 255, 255),

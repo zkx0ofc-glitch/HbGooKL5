@@ -1,9 +1,9 @@
-local Google = {}
-Google.__index = Google
-Google.Build = "components-config-system"
-Google.Flags = Google.Flags or {}
-Google.Options = Google.Options or {}
-Google.ConfigManager = Google.ConfigManager or nil
+local Impacto = {}
+Impacto.__index = Impacto
+Impacto.Build = "components-config-system"
+Impacto.Flags = Impacto.Flags or {}
+Impacto.Options = Impacto.Options or {}
+Impacto.ConfigManager = Impacto.ConfigManager or nil
 
 local function getService(name)
 	local service = game:GetService(name)
@@ -48,7 +48,7 @@ local function clearOldWindows(primaryParent)
 	for parent in pairs(targets) do
 		for _, child in ipairs(parent:GetChildren()) do
 			local name = child.Name
-			if child:IsA("ScreenGui") and (name == "GoogleUI" or name == "GoogleNotifications" or name == "GoogleUINotifications" or string.sub(name, 1, 13) == "GoogleWindow_") then
+			if child:IsA("ScreenGui") and (name == "ImpactoUI" or name == "ImpactoNotifications" or name == "ImpactoUINotifications" or string.sub(name, 1, 13) == "ImpactoWindow_") then
 				pcall(function()
 					child:Destroy()
 				end)
@@ -212,7 +212,7 @@ local function isColor(value)
 end
 
 local function componentColor(name, fallback)
-	local color = Google.Theme and Google.Theme[name]
+	local color = Impacto.Theme and Impacto.Theme[name]
 	if typeof(color) == "Color3" then
 		return color
 	end
@@ -311,8 +311,8 @@ local function blend(colorA, colorB, alpha)
 	return colorA:Lerp(colorB, alpha)
 end
 
-Google.Windows = {}
-Google.Themes = {
+Impacto.Windows = {}
+Impacto.Themes = {
 	Blue = {
 		Window = Color3.fromRGB(248, 250, 252),
 		Topbar = Color3.fromRGB(255, 255, 255),
@@ -335,7 +335,7 @@ Google.Themes = {
 		Hover = Color3.fromRGB(241, 245, 249),
 		Shadow = Color3.fromRGB(15, 23, 42)
 	},
-	Google = {
+	Impacto = {
 		Window = Color3.fromRGB(248, 250, 252),
 		Topbar = Color3.fromRGB(255, 255, 255),
 		Sidebar = Color3.fromRGB(255, 255, 255),
@@ -461,7 +461,7 @@ Google.Themes = {
 		Hover = Color3.fromRGB(18, 20, 25),
 		Shadow = Color3.fromRGB(0, 0, 0)
 	},
-	DarkGoogle = {
+	DarkImpacto = {
 		Window = Color3.fromRGB(7, 8, 10),
 		Topbar = Color3.fromRGB(10, 11, 14),
 		Sidebar = Color3.fromRGB(8, 9, 12),
@@ -550,10 +550,10 @@ Google.Themes = {
 		Shadow = Color3.fromRGB(0, 0, 0)
 	}
 }
-Google.ActiveTheme = "Google"
-Google.Theme = Google.Themes.Google
+Impacto.ActiveTheme = "Impacto"
+Impacto.Theme = Impacto.Themes.Impacto
 
-Google.IconAliases = {
+Impacto.IconAliases = {
 	warning = "triangle-alert",
 	error = "circle-x",
 	dropdown = "chevron-down",
@@ -573,7 +573,7 @@ Google.IconAliases = {
 	notification = "bell"
 }
 
-Google.IconAssets = {
+Impacto.IconAssets = {
 	home = {16898613509, 820, 147},
 	sword = {16898613777, 710, 967},
 	shield = {16898613777, 869, 0},
@@ -621,8 +621,8 @@ Google.IconAssets = {
 
 local function ResolveIcon(name)
 	local key = tostring(name or "")
-	key = Google.IconAliases[key] or key
-	local asset = Google.IconAssets[key]
+	key = Impacto.IconAliases[key] or key
+	local asset = Impacto.IconAssets[key]
 	if not asset then
 		return nil
 	end
@@ -633,7 +633,7 @@ local function ResolveIcon(name)
 	}
 end
 
-function Google.CreateIcon(name, size, color, parent, properties)
+function Impacto.CreateIcon(name, size, color, parent, properties)
 	size = size or 18
 	local asset = ResolveIcon(name)
 	local icon
@@ -672,7 +672,7 @@ function Google.CreateIcon(name, size, color, parent, properties)
 	return icon
 end
 
-function Google.SetIconColor(icon, color)
+function Impacto.SetIconColor(icon, color)
 	if not icon then
 		return
 	end
@@ -683,17 +683,17 @@ function Google.SetIconColor(icon, color)
 	end
 end
 
-function Google.RegisterTheme(name, theme)
+function Impacto.RegisterTheme(name, theme)
 	if type(name) == "string" and type(theme) == "table" then
-		Google.Themes[name] = theme
+		Impacto.Themes[name] = theme
 	end
 end
 
-function Google.SetTheme(name)
-	if Google.Themes[name] then
-		Google.ActiveTheme = name
-		Google.Theme = Google.Themes[name]
-		for _, window in ipairs(Google.Windows) do
+function Impacto.SetTheme(name)
+	if Impacto.Themes[name] then
+		Impacto.ActiveTheme = name
+		Impacto.Theme = Impacto.Themes[name]
+		for _, window in ipairs(Impacto.Windows) do
 			if window.ApplyTheme then
 				window:ApplyTheme()
 			end
@@ -701,8 +701,8 @@ function Google.SetTheme(name)
 	end
 end
 
-function Google.GetTheme()
-	return Google.ActiveTheme, Google.Theme
+function Impacto.GetTheme()
+	return Impacto.ActiveTheme, Impacto.Theme
 end
 
 local Window = {}
@@ -717,10 +717,10 @@ Section.__index = Section
 local ControlBase = {}
 ControlBase.__index = ControlBase
 
-function Google:CreateWindow(config)
+function Impacto:CreateWindow(config)
 	config = config or {}
 	local self = setmetatable({}, Window)
-	self.Title = config.Title or "Google UI"
+	self.Title = config.Title or "Impacto UI"
 	self.Subtitle = config.Subtitle or ""
 	self.Icon = config.Icon or "home"
 	self.DesktopSize = config.Size or UDim2.fromOffset(620, 420)
@@ -743,7 +743,7 @@ function Google:CreateWindow(config)
 	end
 
 	local gui = create("ScreenGui", {
-		Name = "GoogleUI",
+		Name = "ImpactoUI",
 		IgnoreGuiInset = true,
 		ResetOnSpawn = false,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -766,7 +766,7 @@ function Google:CreateWindow(config)
 	local body = create("CanvasGroup", {
 		Name = "Body",
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Google.Theme.Window,
+		BackgroundColor3 = Impacto.Theme.Window,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		ZIndex = 2,
@@ -774,12 +774,12 @@ function Google:CreateWindow(config)
 	})
 	self.BodyCorner = round(body, 18)
 	self.Body = body
-	self.MainStroke = outline(body, Google.Theme.Border, 1, 0)
+	self.MainStroke = outline(body, Impacto.Theme.Border, 1, 0)
 
 	local topbar = create("Frame", {
 		Name = "Topbar",
 		Size = UDim2.new(1, 0, 0, 54),
-		BackgroundColor3 = Google.Theme.Topbar,
+		BackgroundColor3 = Impacto.Theme.Topbar,
 		BorderSizePixel = 0,
 		Parent = body
 	})
@@ -790,7 +790,7 @@ function Google:CreateWindow(config)
 		Name = "TopbarLine",
 		Size = UDim2.new(1, 0, 0, 1),
 		Position = UDim2.new(0, 0, 1, -1),
-		BackgroundColor3 = Google.Theme.Border,
+		BackgroundColor3 = Impacto.Theme.Border,
 		BackgroundTransparency = 0.45,
 		BorderSizePixel = 0,
 		Parent = topbar
@@ -801,13 +801,13 @@ function Google:CreateWindow(config)
 		Name = "TitleIconWrap",
 		Size = UDim2.fromOffset(32, 32),
 		Position = UDim2.fromOffset(14, 11),
-		BackgroundColor3 = Google.Theme.PrimarySoft,
+		BackgroundColor3 = Impacto.Theme.PrimarySoft,
 		BorderSizePixel = 0,
 		Parent = topbar
 	})
 	round(titleIconWrap, 9)
 	self.TitleIconWrap = titleIconWrap
-	self.TitleIcon = Google.CreateIcon(self.Icon, 19, Google.Theme.Primary, titleIconWrap, {
+	self.TitleIcon = Impacto.CreateIcon(self.Icon, 19, Impacto.Theme.Primary, titleIconWrap, {
 		Position = UDim2.fromScale(0.5, 0.5),
 		AnchorPoint = Vector2.new(0.5, 0.5)
 	})
@@ -817,7 +817,7 @@ function Google:CreateWindow(config)
 		Text = self.Title,
 		Font = Enum.Font.GothamBold,
 		TextSize = 15,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Bottom,
 		BackgroundTransparency = 1,
@@ -832,7 +832,7 @@ function Google:CreateWindow(config)
 		Text = self.Subtitle,
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Top,
 		BackgroundTransparency = 1,
@@ -857,7 +857,7 @@ function Google:CreateWindow(config)
 		Text = "",
 		Size = UDim2.fromOffset(30, 30),
 		Position = UDim2.fromOffset(4, 0),
-		BackgroundColor3 = Google.Theme.Hover,
+		BackgroundColor3 = Impacto.Theme.Hover,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
@@ -865,7 +865,7 @@ function Google:CreateWindow(config)
 	})
 	round(minimizeButton, 7)
 	self.MinimizeButton = minimizeButton
-	self.MinimizeIcon = Google.CreateIcon("minus", 16, Google.Theme.Muted, minimizeButton, {
+	self.MinimizeIcon = Impacto.CreateIcon("minus", 16, Impacto.Theme.Muted, minimizeButton, {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5)
 	})
@@ -875,7 +875,7 @@ function Google:CreateWindow(config)
 		Text = "",
 		Size = UDim2.fromOffset(30, 30),
 		Position = UDim2.fromOffset(42, 0),
-		BackgroundColor3 = Google.Theme.Hover,
+		BackgroundColor3 = Impacto.Theme.Hover,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
@@ -883,7 +883,7 @@ function Google:CreateWindow(config)
 	})
 	round(closeButton, 7)
 	self.CloseButton = closeButton
-	self.CloseIcon = Google.CreateIcon("x", 15, Google.Theme.Muted, closeButton, {
+	self.CloseIcon = Impacto.CreateIcon("x", 15, Impacto.Theme.Muted, closeButton, {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5)
 	})
@@ -905,19 +905,19 @@ function Google:CreateWindow(config)
 		animate(minimizeButton, {BackgroundTransparency = 1}, motion.Fast)
 	end)
 	bind(self.Connections, closeButton.MouseEnter, function()
-		Google.SetIconColor(self.CloseIcon, Color3.new(1, 1, 1))
-		animate(closeButton, {BackgroundColor3 = Google.Theme.Danger, BackgroundTransparency = 0}, motion.Fast)
+		Impacto.SetIconColor(self.CloseIcon, Color3.new(1, 1, 1))
+		animate(closeButton, {BackgroundColor3 = Impacto.Theme.Danger, BackgroundTransparency = 0}, motion.Fast)
 	end)
 	bind(self.Connections, closeButton.MouseLeave, function()
-		Google.SetIconColor(self.CloseIcon, Google.Theme.Muted)
-		animate(closeButton, {BackgroundColor3 = Google.Theme.Hover, BackgroundTransparency = 1}, motion.Fast)
+		Impacto.SetIconColor(self.CloseIcon, Impacto.Theme.Muted)
+		animate(closeButton, {BackgroundColor3 = Impacto.Theme.Hover, BackgroundTransparency = 1}, motion.Fast)
 	end)
 
 	local sidebar = create("Frame", {
 		Name = "Sidebar",
 		Size = UDim2.new(0, 152, 1, -54),
 		Position = UDim2.fromOffset(0, 54),
-		BackgroundColor3 = Google.Theme.Sidebar,
+		BackgroundColor3 = Impacto.Theme.Sidebar,
 		BorderSizePixel = 0,
 		Parent = body
 	})
@@ -927,7 +927,7 @@ function Google:CreateWindow(config)
 		Name = "SidebarLine",
 		Size = UDim2.new(0, 1, 1, 0),
 		Position = UDim2.new(1, -1, 0, 0),
-		BackgroundColor3 = Google.Theme.Border,
+		BackgroundColor3 = Impacto.Theme.Border,
 		BackgroundTransparency = 0.45,
 		BorderSizePixel = 0,
 		Parent = sidebar
@@ -957,7 +957,7 @@ function Google:CreateWindow(config)
 		Name = "PageWrap",
 		Size = UDim2.new(1, -152, 1, -54),
 		Position = UDim2.fromOffset(152, 54),
-		BackgroundColor3 = Google.Theme.Page,
+		BackgroundColor3 = Impacto.Theme.Page,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Parent = body
@@ -1011,7 +1011,7 @@ function Google:CreateWindow(config)
 		end
 	end)
 
-	table.insert(Google.Windows, self)
+	table.insert(Impacto.Windows, self)
 	self:UpdateResponsiveLayout(true)
 	self:ApplyTheme()
 	animate(main, {Size = self.Size}, motion.Slow, Enum.EasingStyle.Quint)
@@ -1037,7 +1037,7 @@ function Window:CreateTab(config)
 		Name = tab.Name,
 		Text = "",
 		Size = UDim2.new(1, 0, 0, 36),
-		BackgroundColor3 = Google.Theme.PrimarySoft,
+		BackgroundColor3 = Impacto.Theme.PrimarySoft,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
@@ -1050,7 +1050,7 @@ function Window:CreateTab(config)
 		Name = "Accent",
 		Size = UDim2.new(0, 3, 0, 18),
 		Position = UDim2.fromOffset(0, 9),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		Visible = false,
 		Parent = button
@@ -1058,7 +1058,7 @@ function Window:CreateTab(config)
 	round(accent, 4)
 	tab.Accent = accent
 
-	tab.IconLabel = Google.CreateIcon(tab.Icon, 17, Google.Theme.Muted, button, {
+	tab.IconLabel = Impacto.CreateIcon(tab.Icon, 17, Impacto.Theme.Muted, button, {
 		Position = UDim2.fromOffset(12, 9)
 	})
 	tab.TextLabel = create("TextLabel", {
@@ -1066,7 +1066,7 @@ function Window:CreateTab(config)
 		Text = tab.Name,
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Center,
 		BackgroundTransparency = 1,
@@ -1081,7 +1081,7 @@ function Window:CreateTab(config)
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		ScrollBarThickness = 3,
-		ScrollBarImageColor3 = Google.Theme.BorderStrong,
+		ScrollBarImageColor3 = Impacto.Theme.BorderStrong,
 		CanvasSize = UDim2.fromOffset(0, 0),
 		Visible = false,
 		Parent = self.PageWrap
@@ -1136,20 +1136,20 @@ end
 
 function Tab:GetAccent()
 	if typeof(self.AccentColor) == "Color3" then
-		return self.AccentColor, Google.Theme.PrimarySoft
+		return self.AccentColor, Impacto.Theme.PrimarySoft
 	end
 
-	local accents = Google.Theme.TabAccents
+	local accents = Impacto.Theme.TabAccents
 	if type(accents) == "table" and #accents > 0 then
 		local entry = accents[((self.Index or 1) - 1) % #accents + 1]
 		if type(entry) == "table" and typeof(entry.Color) == "Color3" then
-			return entry.Color, entry.Soft or Google.Theme.PrimarySoft
+			return entry.Color, entry.Soft or Impacto.Theme.PrimarySoft
 		elseif typeof(entry) == "Color3" then
-			return entry, Google.Theme.PrimarySoft
+			return entry, Impacto.Theme.PrimarySoft
 		end
 	end
 
-	return Google.Theme.Primary, Google.Theme.PrimarySoft
+	return Impacto.Theme.Primary, Impacto.Theme.PrimarySoft
 end
 
 function Tab:SetActive(active)
@@ -1173,7 +1173,7 @@ function Tab:SetActive(active)
 		animate(self.Page, {Position = UDim2.fromOffset(0, 0)}, motion.Base)
 		animate(self.Button, {BackgroundTransparency = 0, BackgroundColor3 = accentSoft}, motion.Base)
 		self.TextLabel.TextColor3 = accentColor
-		Google.SetIconColor(self.IconLabel, accentColor)
+		Impacto.SetIconColor(self.IconLabel, accentColor)
 	else
 		animate(self.Button, {BackgroundTransparency = 1}, motion.Fast)
 		local inactiveAccentSize = self.Window.IsMobile and UDim2.new(0, 8, 0, 3) or UDim2.new(0, 3, 0, 8)
@@ -1183,8 +1183,8 @@ function Tab:SetActive(active)
 			end
 		end)
 		self.Page.Visible = false
-		self.TextLabel.TextColor3 = Google.Theme.Muted
-		Google.SetIconColor(self.IconLabel, Google.Theme.Muted)
+		self.TextLabel.TextColor3 = Impacto.Theme.Muted
+		Impacto.SetIconColor(self.IconLabel, Impacto.Theme.Muted)
 	end
 end
 
@@ -1205,7 +1205,7 @@ function Tab:CreateSection(config)
 	local frame = create("Frame", {
 		Name = section.Name,
 		Size = UDim2.new(1, 0, 0, 56),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
@@ -1213,7 +1213,7 @@ function Tab:CreateSection(config)
 	})
 	round(frame, 12)
 	section.Instance = frame
-	section.outline = outline(frame, Google.Theme.Border, 1, 0)
+	section.outline = outline(frame, Impacto.Theme.Border, 1, 0)
 
 	local header = create("TextButton", {
 		Name = "Header",
@@ -1226,7 +1226,7 @@ function Tab:CreateSection(config)
 	})
 	section.Header = header
 
-	section.Arrow = Google.CreateIcon(section.Collapsed and "chevron-right" or "chevron-down", 14, Google.Theme.Muted, header, {
+	section.Arrow = Impacto.CreateIcon(section.Collapsed and "chevron-right" or "chevron-down", 14, Impacto.Theme.Muted, header, {
 		Position = UDim2.fromOffset(13, 14)
 	})
 	section.TitleLabel = create("TextLabel", {
@@ -1234,7 +1234,7 @@ function Tab:CreateSection(config)
 		Text = section.Name,
 		Font = Enum.Font.GothamBold,
 		TextSize = 14,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -48, 0, 20),
@@ -1246,7 +1246,7 @@ function Tab:CreateSection(config)
 		Text = section.Description,
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -48, 0, 18),
@@ -1303,7 +1303,7 @@ function Tab:GetStandaloneSection()
 	local frame = create("Frame", {
 		Name = "StandaloneComponents",
 		Size = UDim2.new(1, 0, 0, 0),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		LayoutOrder = -1000,
@@ -1311,7 +1311,7 @@ function Tab:GetStandaloneSection()
 	})
 	round(frame, 10)
 	section.Instance = frame
-	section.outline = outline(frame, Google.Theme.Border, 0.52, 0.75)
+	section.outline = outline(frame, Impacto.Theme.Border, 0.52, 0.75)
 	local content = create("Frame", {
 		Name = "Content",
 		Position = UDim2.fromOffset(0, 0),
@@ -1340,8 +1340,8 @@ function Tab:GetStandaloneSection()
 		self.Tab:UpdateCanvas()
 	end
 	function section:ApplyTheme()
-		self.Instance.BackgroundColor3 = Google.Theme.Card
-		self.outline.Color = Google.Theme.Border
+		self.Instance.BackgroundColor3 = Impacto.Theme.Card
+		self.outline.Color = Impacto.Theme.Border
 		for _, control in ipairs(self.Controls) do
 			if control.ApplyTheme then
 				control:ApplyTheme()
@@ -1486,7 +1486,7 @@ function Tab:UpdateCanvas()
 end
 
 function Tab:ApplyTheme()
-	self.Page.ScrollBarImageColor3 = Google.Theme.BorderStrong
+	self.Page.ScrollBarImageColor3 = Impacto.Theme.BorderStrong
 	self:SetActive(self.Active)
 	for _, section in ipairs(self.Sections) do
 		section:ApplyTheme()
@@ -1527,14 +1527,14 @@ function Section:Refresh(animated)
 end
 
 function Section:ApplyTheme()
-	self.Instance.BackgroundColor3 = Google.Theme.Card
+	self.Instance.BackgroundColor3 = Impacto.Theme.Card
 	self.Instance.BackgroundTransparency = 0
-	self.outline.Color = Google.Theme.Border
+	self.outline.Color = Impacto.Theme.Border
 	self.outline.Transparency = 1
 	self.outline.Thickness = 0
-	self.TitleLabel.TextColor3 = Google.Theme.Text
-	self.DescriptionLabel.TextColor3 = Google.Theme.Muted
-	Google.SetIconColor(self.Arrow, Google.Theme.Muted)
+	self.TitleLabel.TextColor3 = Impacto.Theme.Text
+	self.DescriptionLabel.TextColor3 = Impacto.Theme.Muted
+	Impacto.SetIconColor(self.Arrow, Impacto.Theme.Muted)
 	for _, control in ipairs(self.Controls) do
 		if control.ApplyTheme then
 			control:ApplyTheme()
@@ -1555,7 +1555,7 @@ local function Control(section, height, name)
 	local frame = create("Frame", {
 		Name = name or "Control",
 		Size = UDim2.new(1, 0, 0, height),
-		BackgroundColor3 = Google.Theme.CardAlt,
+		BackgroundColor3 = Impacto.Theme.CardAlt,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		Parent = section.Content
@@ -1574,7 +1574,7 @@ function Section:CreateButton(config)
 		Name = "Button",
 		Text = "",
 		Size = UDim2.fromScale(1, 1),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = self.Instance
@@ -1583,7 +1583,7 @@ function Section:CreateButton(config)
 	self.Button = button
 	local iconOffset = self.Icon and 34 or 12
 	if self.Icon then
-		self.IconLabel = Google.CreateIcon(self.Icon, 17, Color3.new(1, 1, 1), button, {
+		self.IconLabel = Impacto.CreateIcon(self.Icon, 17, Color3.new(1, 1, 1), button, {
 			Position = UDim2.fromOffset(12, config.Description and 15 or 10)
 		})
 	end
@@ -1616,21 +1616,21 @@ function Section:CreateButton(config)
 		self.Callback()
 	end)
 	bind(self.Connections, button.MouseButton1Down, function()
-		animate(button, {BackgroundColor3 = Google.Theme.PrimaryHover}, motion.Fast)
+		animate(button, {BackgroundColor3 = Impacto.Theme.PrimaryHover}, motion.Fast)
 	end)
 	bind(self.Connections, button.MouseButton1Up, function()
-		animate(button, {BackgroundColor3 = Google.Theme.Primary}, motion.Fast)
+		animate(button, {BackgroundColor3 = Impacto.Theme.Primary}, motion.Fast)
 	end)
 	bind(self.Connections, button.MouseEnter, function()
-		animate(button, {BackgroundColor3 = Google.Theme.PrimaryHover}, motion.Fast)
+		animate(button, {BackgroundColor3 = Impacto.Theme.PrimaryHover}, motion.Fast)
 	end)
 	bind(self.Connections, button.MouseLeave, function()
-		animate(button, {BackgroundColor3 = Google.Theme.Primary}, motion.Fast)
+		animate(button, {BackgroundColor3 = Impacto.Theme.Primary}, motion.Fast)
 	end)
 	function self:ApplyTheme()
-		self.Button.BackgroundColor3 = Google.Theme.Primary
+		self.Button.BackgroundColor3 = Impacto.Theme.Primary
 		if self.IconLabel then
-			Google.SetIconColor(self.IconLabel, Color3.new(1, 1, 1))
+			Impacto.SetIconColor(self.IconLabel, Color3.new(1, 1, 1))
 		end
 	end
 	self:RefreshSection()
@@ -1650,7 +1650,7 @@ function Section:CreateToggle(config)
 		Text = config.Name or "Toggle",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -76, 0, 18),
@@ -1662,7 +1662,7 @@ function Section:CreateToggle(config)
 			Text = config.Description,
 			Font = Enum.Font.Gotham,
 			TextSize = 12,
-			TextColor3 = Google.Theme.Muted,
+			TextColor3 = Impacto.Theme.Muted,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, -76, 0, 16),
@@ -1674,7 +1674,7 @@ function Section:CreateToggle(config)
 		Text = "",
 		Size = UDim2.fromOffset(48, 26),
 		Position = UDim2.new(1, -48, 0.5, -13),
-		BackgroundColor3 = self.Value and Google.Theme.Primary or Google.Theme.BorderStrong,
+		BackgroundColor3 = self.Value and Impacto.Theme.Primary or Impacto.Theme.BorderStrong,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		ClipsDescendants = true,
@@ -1682,14 +1682,14 @@ function Section:CreateToggle(config)
 	})
 	round(switch, 13)
 	self.Switch = switch
-	self.SwitchStroke = outline(switch, self.Value and Google.Theme.PrimaryHover or Google.Theme.BorderStrong, 0.2, 1)
+	self.SwitchStroke = outline(switch, self.Value and Impacto.Theme.PrimaryHover or Impacto.Theme.BorderStrong, 0.2, 1)
 	self.SwitchStroke.Name = "ToggleStroke"
 	self.SwitchGradient = create("UIGradient", {
 		Name = "Gradient",
 		Rotation = 0,
 		Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, self.Value and blend(Google.Theme.Primary, Color3.new(1, 1, 1), 0.14) or blend(Google.Theme.BorderStrong, Color3.new(1, 1, 1), 0.1)),
-			ColorSequenceKeypoint.new(1, self.Value and Google.Theme.Primary or Google.Theme.BorderStrong)
+			ColorSequenceKeypoint.new(0, self.Value and blend(Impacto.Theme.Primary, Color3.new(1, 1, 1), 0.14) or blend(Impacto.Theme.BorderStrong, Color3.new(1, 1, 1), 0.1)),
+			ColorSequenceKeypoint.new(1, self.Value and Impacto.Theme.Primary or Impacto.Theme.BorderStrong)
 		}),
 		Parent = switch
 	})
@@ -1701,19 +1701,19 @@ function Section:CreateToggle(config)
 		Parent = switch
 	})
 	round(self.Knob, 11)
-	self.KnobStroke = outline(self.Knob, blend(Google.Theme.Border, Color3.new(1, 1, 1), 0.45), 0.15, 1)
+	self.KnobStroke = outline(self.Knob, blend(Impacto.Theme.Border, Color3.new(1, 1, 1), 0.45), 0.15, 1)
 	self.KnobStroke.Name = "KnobStroke"
 	function self:Set(value)
 		self.Value = value and true or false
-		local base = self.Value and Google.Theme.Primary or Google.Theme.BorderStrong
+		local base = self.Value and Impacto.Theme.Primary or Impacto.Theme.BorderStrong
 		animate(self.Switch, {BackgroundColor3 = base}, motion.Base)
 		animate(self.Knob, {Position = self.Value and UDim2.new(1, -24, 0.5, -11) or UDim2.fromOffset(2, 2)}, motion.Base)
 		if self.SwitchStroke then
-			animate(self.SwitchStroke, {Color = self.Value and Google.Theme.PrimaryHover or Google.Theme.BorderStrong, Transparency = self.Value and 0.08 or 0.22}, motion.Base)
+			animate(self.SwitchStroke, {Color = self.Value and Impacto.Theme.PrimaryHover or Impacto.Theme.BorderStrong, Transparency = self.Value and 0.08 or 0.22}, motion.Base)
 		end
 		if self.SwitchGradient then
 			self.SwitchGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, self.Value and blend(Google.Theme.Primary, Color3.new(1, 1, 1), 0.14) or blend(Google.Theme.BorderStrong, Color3.new(1, 1, 1), 0.1)),
+				ColorSequenceKeypoint.new(0, self.Value and blend(Impacto.Theme.Primary, Color3.new(1, 1, 1), 0.14) or blend(Impacto.Theme.BorderStrong, Color3.new(1, 1, 1), 0.1)),
 				ColorSequenceKeypoint.new(1, base)
 			})
 		end
@@ -1731,16 +1731,16 @@ function Section:CreateToggle(config)
 		end
 	end)
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
+		self.Label.TextColor3 = Impacto.Theme.Text
 		if self.DescriptionLabel then
-			self.DescriptionLabel.TextColor3 = Google.Theme.Muted
+			self.DescriptionLabel.TextColor3 = Impacto.Theme.Muted
 		end
-		self.Switch.BackgroundColor3 = self.Value and Google.Theme.Primary or Google.Theme.BorderStrong
+		self.Switch.BackgroundColor3 = self.Value and Impacto.Theme.Primary or Impacto.Theme.BorderStrong
 		if self.SwitchStroke then
-			self.SwitchStroke.Color = self.Value and Google.Theme.PrimaryHover or Google.Theme.BorderStrong
+			self.SwitchStroke.Color = self.Value and Impacto.Theme.PrimaryHover or Impacto.Theme.BorderStrong
 		end
 		if self.KnobStroke then
-			self.KnobStroke.Color = blend(Google.Theme.Border, Color3.new(1, 1, 1), 0.45)
+			self.KnobStroke.Color = blend(Impacto.Theme.Border, Color3.new(1, 1, 1), 0.45)
 		end
 	end
 	self:RefreshSection()
@@ -1769,7 +1769,7 @@ function Section:CreateSlider(config)
 		Text = config.Name or "Slider",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -70, 0, 20),
@@ -1780,7 +1780,7 @@ function Section:CreateSlider(config)
 		Text = tostring(self.Value),
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Primary,
+		TextColor3 = Impacto.Theme.Primary,
 		TextXAlignment = Enum.TextXAlignment.Right,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(0, 64, 0, 20),
@@ -1790,17 +1790,17 @@ function Section:CreateSlider(config)
 	self.Track = create("Frame", {
 		Size = UDim2.new(1, 0, 0, 8),
 		Position = UDim2.fromOffset(0, 36),
-		BackgroundColor3 = Google.Theme.Border,
+		BackgroundColor3 = Impacto.Theme.Border,
 		BorderSizePixel = 0,
 		ClipsDescendants = false,
 		Parent = self.Instance
 	})
 	round(self.Track, 8)
-	self.TrackStroke = outline(self.Track, Google.Theme.BorderStrong, 0.65, 1)
+	self.TrackStroke = outline(self.Track, Impacto.Theme.BorderStrong, 0.65, 1)
 	self.TrackStroke.Name = "SliderTrackStroke"
 	self.Fill = create("Frame", {
 		Size = UDim2.fromScale(0, 1),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		ZIndex = 2,
 		Parent = self.Track
@@ -1810,8 +1810,8 @@ function Section:CreateSlider(config)
 		Name = "Gradient",
 		Rotation = 0,
 		Color = ColorSequence.new({
-			ColorSequenceKeypoint.new(0, Google.Theme.Primary),
-			ColorSequenceKeypoint.new(1, blend(Google.Theme.Primary, Color3.new(1, 1, 1), 0.16))
+			ColorSequenceKeypoint.new(0, Impacto.Theme.Primary),
+			ColorSequenceKeypoint.new(1, blend(Impacto.Theme.Primary, Color3.new(1, 1, 1), 0.16))
 		}),
 		Parent = self.Fill
 	})
@@ -1825,12 +1825,12 @@ function Section:CreateSlider(config)
 		Parent = self.Track
 	})
 	round(self.Knob, 10)
-	self.KnobStroke = outline(self.Knob, Google.Theme.Primary, 0.05, 2)
+	self.KnobStroke = outline(self.Knob, Impacto.Theme.Primary, 0.05, 2)
 	self.KnobDot = create("Frame", {
 		Size = UDim2.fromOffset(8, 8),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		ZIndex = 4,
 		Parent = self.Knob
@@ -1883,23 +1883,23 @@ function Section:CreateSlider(config)
 		end
 	end)
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
-		self.ValueLabel.TextColor3 = Google.Theme.Primary
-		self.Track.BackgroundColor3 = Google.Theme.Border
-		self.Fill.BackgroundColor3 = Google.Theme.Primary
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.ValueLabel.TextColor3 = Impacto.Theme.Primary
+		self.Track.BackgroundColor3 = Impacto.Theme.Border
+		self.Fill.BackgroundColor3 = Impacto.Theme.Primary
 		if self.FillGradient then
 			self.FillGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Google.Theme.Primary),
-				ColorSequenceKeypoint.new(1, blend(Google.Theme.Primary, Color3.new(1, 1, 1), 0.16))
+				ColorSequenceKeypoint.new(0, Impacto.Theme.Primary),
+				ColorSequenceKeypoint.new(1, blend(Impacto.Theme.Primary, Color3.new(1, 1, 1), 0.16))
 			})
 		end
 		self.Knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-		self.KnobStroke.Color = Google.Theme.Primary
+		self.KnobStroke.Color = Impacto.Theme.Primary
 		if self.KnobDot then
-			self.KnobDot.BackgroundColor3 = Google.Theme.Primary
+			self.KnobDot.BackgroundColor3 = Impacto.Theme.Primary
 		end
 		if self.TrackStroke then
-			self.TrackStroke.Color = Google.Theme.BorderStrong
+			self.TrackStroke.Color = Impacto.Theme.BorderStrong
 		end
 	end
 	self:UpdateVisual()
@@ -1931,18 +1931,18 @@ function Section:CreateDropdown(config)
 	self.Main = create("TextButton", {
 		Text = "",
 		Size = UDim2.new(1, 0, 0, 36),
-		BackgroundColor3 = Google.Theme.Input,
+		BackgroundColor3 = Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = self.Instance
 	})
 	round(self.Main, 8)
-	self.MainStroke = outline(self.Main, Google.Theme.Border, 0.86, 1)
+	self.MainStroke = outline(self.Main, Impacto.Theme.Border, 0.86, 1)
 	self.Label = create("TextLabel", {
 		Text = config.Name or "Dropdown",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
@@ -1954,7 +1954,7 @@ function Section:CreateDropdown(config)
 		Text = self.Multi and (#self.Value > 0 and table.concat(self.Value, ", ") or "Select") or tostring(self.Value or "Select"),
 		Font = Enum.Font.Gotham,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Right,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
@@ -1962,21 +1962,21 @@ function Section:CreateDropdown(config)
 		Position = UDim2.new(0.45, 0, 0, 0),
 		Parent = self.Main
 	})
-	self.Arrow = Google.CreateIcon("chevron-down", 15, Google.Theme.Muted, self.Main, {
+	self.Arrow = Impacto.CreateIcon("chevron-down", 15, Impacto.Theme.Muted, self.Main, {
 		Position = UDim2.new(1, -27, 0.5, -7)
 	})
 	self.Menu = create("Frame", {
 		Name = "Menu",
 		Position = UDim2.fromOffset(0, 42),
 		Size = UDim2.new(1, 0, 0, 0),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Visible = false,
 		Parent = self.Instance
 	})
 	round(self.Menu, 8)
-	self.MenuStroke = outline(self.Menu, Google.Theme.Border, 0.86, 1)
+	self.MenuStroke = outline(self.Menu, Impacto.Theme.Border, 0.86, 1)
 	local searchOffset = 0
 	if self.Searchable then
 		self.SearchBox = create("TextBox", {
@@ -1984,17 +1984,17 @@ function Section:CreateDropdown(config)
 			PlaceholderText = "Search",
 			Font = Enum.Font.Gotham,
 			TextSize = 12,
-			TextColor3 = Google.Theme.Text,
-			PlaceholderColor3 = Google.Theme.Subtle,
+			TextColor3 = Impacto.Theme.Text,
+			PlaceholderColor3 = Impacto.Theme.Subtle,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			Size = UDim2.new(1, -12, 0, 28),
 			Position = UDim2.fromOffset(6, 6),
-			BackgroundColor3 = Google.Theme.Input,
+			BackgroundColor3 = Impacto.Theme.Input,
 			BorderSizePixel = 0,
 			Parent = self.Menu
 		})
 		round(self.SearchBox, 8)
-		self.SearchStroke = outline(self.SearchBox, Google.Theme.Border, 0.82, 1)
+		self.SearchStroke = outline(self.SearchBox, Impacto.Theme.Border, 0.82, 1)
 		pad(self.SearchBox, 8, 8, 0, 0)
 		searchOffset = 36
 	end
@@ -2030,7 +2030,7 @@ function Section:CreateDropdown(config)
 				Name = tostring(option),
 				Text = "",
 				Size = UDim2.new(1, -4, 0, 28),
-				BackgroundColor3 = Google.Theme.Hover,
+				BackgroundColor3 = Impacto.Theme.Hover,
 				BackgroundTransparency = 1,
 				BorderSizePixel = 0,
 				AutoButtonColor = false,
@@ -2042,7 +2042,7 @@ function Section:CreateDropdown(config)
 				Text = tostring(option),
 				Font = Enum.Font.Gotham,
 				TextSize = 13,
-				TextColor3 = Google.Theme.Text,
+				TextColor3 = Impacto.Theme.Text,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				BackgroundTransparency = 1,
 				Size = UDim2.new(1, -14, 1, 0),
@@ -2125,11 +2125,11 @@ function Section:CreateDropdown(config)
 		self:RefreshOptions()
 	end
 	bind(self.Connections, self.Main.MouseEnter, function()
-		self.MainStroke.Color = Google.Theme.Primary
+		self.MainStroke.Color = Impacto.Theme.Primary
 	end)
 	bind(self.Connections, self.Main.MouseLeave, function()
 		if not self.Open then
-			self.MainStroke.Color = Google.Theme.Border
+			self.MainStroke.Color = Impacto.Theme.Border
 		end
 	end)
 	bind(self.Connections, self.Main.MouseButton1Click, function()
@@ -2145,26 +2145,26 @@ function Section:CreateDropdown(config)
 		end)
 	end
 	function self:ApplyTheme()
-		self.Main.BackgroundColor3 = Google.Theme.Input
-		self.MainStroke.Color = Google.Theme.Border
-		self.Label.TextColor3 = Google.Theme.Text
-		self.SelectedLabel.TextColor3 = Google.Theme.Muted
-		Google.SetIconColor(self.Arrow, Google.Theme.Muted)
-		self.Menu.BackgroundColor3 = Google.Theme.Card
-		self.MenuStroke.Color = Google.Theme.Border
-		self.OptionsFrame.ScrollBarImageColor3 = Google.Theme.BorderStrong
+		self.Main.BackgroundColor3 = Impacto.Theme.Input
+		self.MainStroke.Color = Impacto.Theme.Border
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.SelectedLabel.TextColor3 = Impacto.Theme.Muted
+		Impacto.SetIconColor(self.Arrow, Impacto.Theme.Muted)
+		self.Menu.BackgroundColor3 = Impacto.Theme.Card
+		self.MenuStroke.Color = Impacto.Theme.Border
+		self.OptionsFrame.ScrollBarImageColor3 = Impacto.Theme.BorderStrong
 		if self.SearchBox then
-			self.SearchBox.BackgroundColor3 = Google.Theme.Input
-			self.SearchBox.TextColor3 = Google.Theme.Text
-			self.SearchBox.PlaceholderColor3 = Google.Theme.Subtle
-			self.SearchStroke.Color = Google.Theme.Border
+			self.SearchBox.BackgroundColor3 = Impacto.Theme.Input
+			self.SearchBox.TextColor3 = Impacto.Theme.Text
+			self.SearchBox.PlaceholderColor3 = Impacto.Theme.Subtle
+			self.SearchStroke.Color = Impacto.Theme.Border
 		end
 		for _, item in ipairs(self.OptionsFrame:GetChildren()) do
 			if item:IsA("TextButton") then
-				item.BackgroundColor3 = Google.Theme.Hover
+				item.BackgroundColor3 = Impacto.Theme.Hover
 				local label = item:FindFirstChildOfClass("TextLabel")
 				if label then
-					label.TextColor3 = Google.Theme.Text
+					label.TextColor3 = Impacto.Theme.Text
 				end
 			end
 		end
@@ -2194,7 +2194,7 @@ function Section:CreateTextbox(config)
 		Text = config.Name or "Textbox",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, 0, 0, 18),
@@ -2206,19 +2206,19 @@ function Section:CreateTextbox(config)
 		PlaceholderText = config.Placeholder or "",
 		Font = Enum.Font.Gotham,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
-		PlaceholderColor3 = Google.Theme.Subtle,
+		TextColor3 = Impacto.Theme.Text,
+		PlaceholderColor3 = Impacto.Theme.Subtle,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		Size = UDim2.new(1, 0, 0, 32),
 		Position = UDim2.fromOffset(0, 24),
-		BackgroundColor3 = Google.Theme.Input,
+		BackgroundColor3 = Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		ClearTextOnFocus = false,
 		Parent = self.Instance
 	})
 	round(self.Entry, 8)
 	pad(self.Entry, 10, 10, 0, 0)
-	self.EntryStroke = outline(self.Entry, Google.Theme.Border, 0.86, 1)
+	self.EntryStroke = outline(self.Entry, Impacto.Theme.Border, 0.86, 1)
 	function self:Set(value)
 		if self.Numeric then
 			local numberValue = tonumber(value)
@@ -2235,18 +2235,18 @@ function Section:CreateTextbox(config)
 		return self.Value
 	end
 	bind(self.Connections, self.Entry.Focused, function()
-		animate(self.EntryStroke, {Color = componentColor("InputAccent", Google.Theme.Primary), Transparency = 0}, motion.Fast)
+		animate(self.EntryStroke, {Color = componentColor("InputAccent", Impacto.Theme.Primary), Transparency = 0}, motion.Fast)
 	end)
 	bind(self.Connections, self.Entry.FocusLost, function()
 		self:Set(self.Entry.Text)
-		animate(self.EntryStroke, {Color = Google.Theme.Border, Transparency = 0.08}, motion.Fast)
+		animate(self.EntryStroke, {Color = Impacto.Theme.Border, Transparency = 0.08}, motion.Fast)
 	end)
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
-		self.Entry.BackgroundColor3 = Google.Theme.Input
-		self.Entry.TextColor3 = Google.Theme.Text
-		self.Entry.PlaceholderColor3 = Google.Theme.Subtle
-		self.EntryStroke.Color = Google.Theme.Border
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.Entry.BackgroundColor3 = Impacto.Theme.Input
+		self.Entry.TextColor3 = Impacto.Theme.Text
+		self.Entry.PlaceholderColor3 = Impacto.Theme.Subtle
+		self.EntryStroke.Color = Impacto.Theme.Border
 	end
 	self:RefreshSection()
 	return self
@@ -2273,7 +2273,7 @@ function Section:CreateKeybind(config)
 		Text = config.Name or "Keybind",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -92, 1, 0),
@@ -2283,16 +2283,16 @@ function Section:CreateKeybind(config)
 		Text = self.Value.Name,
 		Font = Enum.Font.GothamBold,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		Size = UDim2.fromOffset(80, 28),
 		Position = UDim2.new(1, -80, 0.5, -14),
-		BackgroundColor3 = Google.Theme.Input,
+		BackgroundColor3 = Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = self.Instance
 	})
 	round(self.Button, 8)
-	self.ButtonStroke = outline(self.Button, Google.Theme.Border, 0.84, 1)
+	self.ButtonStroke = outline(self.Button, Impacto.Theme.Border, 0.84, 1)
 	function self:Set(keycode)
 		self.Value = keycode
 		self.Button.Text = keycode.Name
@@ -2301,17 +2301,17 @@ function Section:CreateKeybind(config)
 		return self.Value
 	end
 	bind(self.Connections, self.Button.MouseEnter, function()
-		animate(self.ButtonStroke, {Color = componentColor("Keybind", Google.Theme.Primary), Transparency = 0}, motion.Fast)
+		animate(self.ButtonStroke, {Color = componentColor("Keybind", Impacto.Theme.Primary), Transparency = 0}, motion.Fast)
 	end)
 	bind(self.Connections, self.Button.MouseLeave, function()
 		if not self.Binding then
-			animate(self.ButtonStroke, {Color = Google.Theme.Border, Transparency = 0.08}, motion.Fast)
+			animate(self.ButtonStroke, {Color = Impacto.Theme.Border, Transparency = 0.08}, motion.Fast)
 		end
 	end)
 	bind(self.Connections, self.Button.MouseButton1Click, function()
 		self.Binding = true
 		self.Button.Text = "..."
-		animate(self.ButtonStroke, {Color = componentColor("Keybind", Google.Theme.Primary), Transparency = 0}, motion.Fast)
+		animate(self.ButtonStroke, {Color = componentColor("Keybind", Impacto.Theme.Primary), Transparency = 0}, motion.Fast)
 	end)
 	bind(self.Connections, UserInputService.InputBegan, function(input, processed)
 		if processed then
@@ -2321,7 +2321,7 @@ function Section:CreateKeybind(config)
 			if input.UserInputType == Enum.UserInputType.Keyboard then
 				self:Set(input.KeyCode)
 				self.Binding = false
-				animate(self.ButtonStroke, {Color = Google.Theme.Border, Transparency = 0.08}, motion.Fast)
+				animate(self.ButtonStroke, {Color = Impacto.Theme.Border, Transparency = 0.08}, motion.Fast)
 			end
 			return
 		end
@@ -2342,10 +2342,10 @@ function Section:CreateKeybind(config)
 		end
 	end)
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
-		self.Button.BackgroundColor3 = Google.Theme.Input
-		self.Button.TextColor3 = Google.Theme.Text
-		self.ButtonStroke.Color = Google.Theme.Border
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.Button.BackgroundColor3 = Impacto.Theme.Input
+		self.Button.TextColor3 = Impacto.Theme.Text
+		self.ButtonStroke.Color = Impacto.Theme.Border
 	end
 	self:RefreshSection()
 	return self
@@ -2363,7 +2363,7 @@ end
 function Section:CreateColorPicker(config)
 	config = config or {}
 	local self = Control(self, 38, "ColorPicker")
-	self.Value = config.Default or Google.Theme.Primary
+	self.Value = config.Default or Impacto.Theme.Primary
 	self.Callback = config.Callback or function() end
 	self.Open = false
 	self.Colors = config.Colors or {
@@ -2380,7 +2380,7 @@ function Section:CreateColorPicker(config)
 		Text = config.Name or "Color",
 		Font = Enum.Font.GothamMedium,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -52, 0, 34),
@@ -2396,7 +2396,7 @@ function Section:CreateColorPicker(config)
 		Parent = self.Instance
 	})
 	round(self.Button, 8)
-	self.ButtonStroke = outline(self.Button, Google.Theme.Border, 0.84, 1)
+	self.ButtonStroke = outline(self.Button, Impacto.Theme.Border, 0.84, 1)
 	self.Palette = create("Frame", {
 		Size = UDim2.new(1, 0, 0, 0),
 		Position = UDim2.fromOffset(0, 42),
@@ -2432,7 +2432,7 @@ function Section:CreateColorPicker(config)
 			Parent = self.Palette
 		})
 		round(swatch, 8)
-		outline(swatch, Google.Theme.Border, 0.82, 1)
+		outline(swatch, Impacto.Theme.Border, 0.82, 1)
 		bind(self.Connections, swatch.MouseButton1Click, function()
 			self:Set(color)
 		end)
@@ -2454,8 +2454,8 @@ function Section:CreateColorPicker(config)
 	end
 	bind(self.Connections, self.Button.MouseButton1Click, togglePalette)
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
-		self.ButtonStroke.Color = Google.Theme.Border
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.ButtonStroke.Color = Impacto.Theme.Border
 	end
 	self:RefreshSection()
 	return self
@@ -2480,7 +2480,7 @@ function Section:CreateLabel(config)
 		Text = config.Name or config.Text or "Label",
 		Font = Enum.Font.Gotham,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextWrapped = true,
 		BackgroundTransparency = 1,
@@ -2491,7 +2491,7 @@ function Section:CreateLabel(config)
 		self.Label.Text = tostring(text)
 	end
 	function self:ApplyTheme()
-		self.Label.TextColor3 = Google.Theme.Text
+		self.Label.TextColor3 = Impacto.Theme.Text
 	end
 	self:RefreshSection()
 	return self
@@ -2508,15 +2508,15 @@ function Section:CreateParagraph(config)
 	local height = title and 64 or 48
 	local self = Control(self, height, "Paragraph")
 	self.Instance.BackgroundTransparency = 0
-	self.Instance.BackgroundColor3 = Google.Theme.CardAlt
+	self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
 	round(self.Instance, 8)
-	self.outline = outline(self.Instance, Google.Theme.Border, 1, 0)
+	self.outline = outline(self.Instance, Impacto.Theme.Border, 1, 0)
 	if title then
 		self.TitleLabel = create("TextLabel", {
 			Text = title,
 			Font = Enum.Font.GothamBold,
 			TextSize = 13,
-			TextColor3 = Google.Theme.Text,
+			TextColor3 = Impacto.Theme.Text,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, -20, 0, 18),
@@ -2528,7 +2528,7 @@ function Section:CreateParagraph(config)
 		Text = text,
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Top,
 		TextWrapped = true,
@@ -2538,12 +2538,12 @@ function Section:CreateParagraph(config)
 		Parent = self.Instance
 	})
 	function self:ApplyTheme()
-		self.Instance.BackgroundColor3 = Google.Theme.CardAlt
-		self.outline.Color = Google.Theme.Border
+		self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.outline.Color = Impacto.Theme.Border
 		if self.TitleLabel then
-			self.TitleLabel.TextColor3 = Google.Theme.Text
+			self.TitleLabel.TextColor3 = Impacto.Theme.Text
 		end
-		self.TextLabel.TextColor3 = Google.Theme.Muted
+		self.TextLabel.TextColor3 = Impacto.Theme.Muted
 	end
 	self:RefreshSection()
 	return self
@@ -2571,16 +2571,16 @@ function Section:CreateImage(config)
 	end
 	local self = Control(self, height, "Image")
 	self.Instance.BackgroundTransparency = 0
-	self.Instance.BackgroundColor3 = Google.Theme.CardAlt
+	self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
 	self.Instance.ClipsDescendants = false
 	round(self.Instance, 10)
-	self.outline = outline(self.Instance, Google.Theme.Border, 1, 0)
+	self.outline = outline(self.Instance, Impacto.Theme.Border, 1, 0)
 	if title then
 		self.TitleLabel = create("TextLabel", {
 			Text = title,
 			Font = Enum.Font.GothamBold,
 			TextSize = 13,
-			TextColor3 = Google.Theme.Text,
+			TextColor3 = Impacto.Theme.Text,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, -20, 0, 18),
@@ -2593,7 +2593,7 @@ function Section:CreateImage(config)
 			Text = description,
 			Font = Enum.Font.Gotham,
 			TextSize = 12,
-			TextColor3 = Google.Theme.Muted,
+			TextColor3 = Impacto.Theme.Muted,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, -20, 0, 16),
@@ -2604,13 +2604,13 @@ function Section:CreateImage(config)
 	self.ImageFrame = create("Frame", {
 		Size = UDim2.new(1, -20, 0, imageHeight),
 		Position = UDim2.fromOffset(10, topOffset),
-		BackgroundColor3 = config.BackgroundColor or Google.Theme.Input,
+		BackgroundColor3 = config.BackgroundColor or Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Parent = self.Instance
 	})
 	round(self.ImageFrame, tonumber(config.ImageCornerRadius) or tonumber(config.CornerRadius) or 8)
-	self.ImageStroke = outline(self.ImageFrame, Google.Theme.Border, 0.86, 1)
+	self.ImageStroke = outline(self.ImageFrame, Impacto.Theme.Border, 0.86, 1)
 	local initialSource = config.Image or config.ImageId or config.Source or config.AssetId or config.Id
 	self.ImageFallback = imageThumbnail(initialSource)
 	self.Image = create("ImageLabel", {
@@ -2626,7 +2626,7 @@ function Section:CreateImage(config)
 		Text = config.Placeholder or "Image",
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Subtle,
+		TextColor3 = Impacto.Theme.Subtle,
 		BackgroundTransparency = 1,
 		Size = UDim2.fromScale(1, 1),
 		Visible = self.Image.Image == "",
@@ -2662,19 +2662,19 @@ function Section:CreateImage(config)
 		return self.Image.ScaleType
 	end
 	function self:ApplyTheme()
-		self.Instance.BackgroundColor3 = Google.Theme.CardAlt
-		self.outline.Color = Google.Theme.Border
-		self.ImageFrame.BackgroundColor3 = config.BackgroundColor or Google.Theme.Input
-		self.ImageStroke.Color = Google.Theme.Border
+		self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.outline.Color = Impacto.Theme.Border
+		self.ImageFrame.BackgroundColor3 = config.BackgroundColor or Impacto.Theme.Input
+		self.ImageStroke.Color = Impacto.Theme.Border
 		self.ImageStroke.Transparency = 0.86
 		self.ImageStroke.Thickness = 1
 		if self.TitleLabel then
-			self.TitleLabel.TextColor3 = Google.Theme.Text
+			self.TitleLabel.TextColor3 = Impacto.Theme.Text
 		end
 		if self.DescriptionLabel then
-			self.DescriptionLabel.TextColor3 = Google.Theme.Muted
+			self.DescriptionLabel.TextColor3 = Impacto.Theme.Muted
 		end
-		self.Placeholder.TextColor3 = Google.Theme.Subtle
+		self.Placeholder.TextColor3 = Impacto.Theme.Subtle
 	end
 	self:RefreshSection()
 	return self
@@ -2695,7 +2695,7 @@ function Section:CreateDivider(config)
 			Text = config.Name,
 			Font = Enum.Font.GothamMedium,
 			TextSize = 12,
-			TextColor3 = Google.Theme.Muted,
+			TextColor3 = Impacto.Theme.Muted,
 			TextXAlignment = Enum.TextXAlignment.Center,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(0.32, 0, 1, 0),
@@ -2705,14 +2705,14 @@ function Section:CreateDivider(config)
 		self.Left = create("Frame", {
 			Size = UDim2.new(0.34, -8, 0, 1),
 			Position = UDim2.new(0, 0, 0.5, 0),
-			BackgroundColor3 = Google.Theme.Border,
+			BackgroundColor3 = Impacto.Theme.Border,
 			BorderSizePixel = 0,
 			Parent = self.Instance
 		})
 		self.Right = create("Frame", {
 			Size = UDim2.new(0.34, -8, 0, 1),
 			Position = UDim2.new(0.66, 8, 0.5, 0),
-			BackgroundColor3 = Google.Theme.Border,
+			BackgroundColor3 = Impacto.Theme.Border,
 			BorderSizePixel = 0,
 			Parent = self.Instance
 		})
@@ -2720,18 +2720,18 @@ function Section:CreateDivider(config)
 		self.Line = create("Frame", {
 			Size = UDim2.new(1, 0, 0, 1),
 			Position = UDim2.new(0, 0, 0.5, 0),
-			BackgroundColor3 = Google.Theme.Border,
+			BackgroundColor3 = Impacto.Theme.Border,
 			BorderSizePixel = 0,
 			Parent = self.Instance
 		})
 	end
 	function self:ApplyTheme()
 		if self.Label then
-			self.Label.TextColor3 = Google.Theme.Muted
+			self.Label.TextColor3 = Impacto.Theme.Muted
 		end
-		if self.Left then self.Left.BackgroundColor3 = Google.Theme.Border end
-		if self.Right then self.Right.BackgroundColor3 = Google.Theme.Border end
-		if self.Line then self.Line.BackgroundColor3 = Google.Theme.Border end
+		if self.Left then self.Left.BackgroundColor3 = Impacto.Theme.Border end
+		if self.Right then self.Right.BackgroundColor3 = Impacto.Theme.Border end
+		if self.Line then self.Line.BackgroundColor3 = Impacto.Theme.Border end
 	end
 	self:RefreshSection()
 	return self
@@ -2855,7 +2855,7 @@ function Window:UpdateResponsiveLayout(force)
 end
 
 function Window:ApplyTheme()
-	local theme = Google.Theme
+	local theme = Impacto.Theme
 	self.Instance.BackgroundTransparency = 1
 	self.Body.BackgroundColor3 = theme.Window
 	self.MainStroke.Color = theme.Border
@@ -2870,13 +2870,13 @@ function Window:ApplyTheme()
 	self.PageWrap.BackgroundColor3 = theme.Page
 	self.PageWrap.BackgroundTransparency = 0
 	self.TitleIconWrap.BackgroundColor3 = theme.PrimarySoft
-	Google.SetIconColor(self.TitleIcon, theme.Primary)
+	Impacto.SetIconColor(self.TitleIcon, theme.Primary)
 	self.TitleLabel.TextColor3 = theme.Text
 	self.SubtitleLabel.TextColor3 = theme.Muted
 	self.MinimizeButton.BackgroundColor3 = theme.Hover
 	self.CloseButton.BackgroundColor3 = theme.Hover
-	Google.SetIconColor(self.MinimizeIcon, theme.Muted)
-	Google.SetIconColor(self.CloseIcon, theme.Muted)
+	Impacto.SetIconColor(self.MinimizeIcon, theme.Muted)
+	Impacto.SetIconColor(self.CloseIcon, theme.Muted)
 	for _, tab in ipairs(self.Tabs) do
 		self:ApplyTabResponsiveStyle(tab)
 		tab.Page.BackgroundTransparency = 1
@@ -2934,9 +2934,9 @@ function Window:Destroy()
 			tab:Destroy()
 		end
 	end
-	for index, window in ipairs(Google.Windows) do
+	for index, window in ipairs(Impacto.Windows) do
 		if window == self then
-			table.remove(Google.Windows, index)
+			table.remove(Impacto.Windows, index)
 			break
 		end
 	end
@@ -2984,7 +2984,7 @@ function NotificationManager:Init()
 		return
 	end
 	self.Gui = create("ScreenGui", {
-		Name = "GoogleUINotifications",
+		Name = "ImpactoUINotifications",
 		IgnoreGuiInset = true,
 		ResetOnSpawn = false,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -3017,22 +3017,22 @@ function NotificationManager:Push(config)
 		Size = UDim2.fromOffset(292, 62),
 		AnchorPoint = Vector2.new(1, 1),
 		Position = UDim2.new(1, 310, 1, -18),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Parent = self.Holder
 	})
 	round(frame, 10)
-	outline(frame, Google.Theme.Border, 0.52, 0.75)
+	outline(frame, Impacto.Theme.Border, 0.52, 0.75)
 	local iconWrap = create("Frame", {
 		Size = UDim2.fromOffset(34, 34),
 		Position = UDim2.fromOffset(12, 14),
-		BackgroundColor3 = Google.Theme.PrimarySoft,
+		BackgroundColor3 = Impacto.Theme.PrimarySoft,
 		BorderSizePixel = 0,
 		Parent = frame
 	})
 	round(iconWrap, 8)
-	Google.CreateIcon(config.Icon or "info", 18, config.IconColor or Google.Theme.Primary, iconWrap, {
+	Impacto.CreateIcon(config.Icon or "info", 18, config.IconColor or Impacto.Theme.Primary, iconWrap, {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5)
 	})
@@ -3040,7 +3040,7 @@ function NotificationManager:Push(config)
 		Text = config.Title or "Notification",
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -64, 0, 18),
@@ -3051,7 +3051,7 @@ function NotificationManager:Push(config)
 		Text = config.Description or "",
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextWrapped = true,
 		BackgroundTransparency = 1,
@@ -3062,7 +3062,7 @@ function NotificationManager:Push(config)
 	local progress = create("Frame", {
 		Size = UDim2.new(1, -14, 0, 2),
 		Position = UDim2.new(0, 7, 1, -5),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		Parent = frame
 	})
@@ -3086,19 +3086,19 @@ function NotificationManager:Push(config)
 	end)()
 end
 
-function Google.Notify(config)
+function Impacto.Notify(config)
 	NotificationManager:Push(config)
 end
 
-function Google:Notify(config)
+function Impacto:Notify(config)
 	NotificationManager:Push(config)
 end
 
-function Google:Confirm(config)
+function Impacto:Confirm(config)
 	config = config or {}
 	local callback = config.Callback or function() end
 	local gui = create("ScreenGui", {
-		Name = "GoogleUIConfirm",
+		Name = "ImpactoUIConfirm",
 		IgnoreGuiInset = true,
 		ResetOnSpawn = false,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -3114,17 +3114,17 @@ function Google:Confirm(config)
 		Size = UDim2.fromOffset(320, 142),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		Parent = overlay
 	})
 	round(dialog, 12)
-	outline(dialog, Google.Theme.Border, 1, 0)
+	outline(dialog, Impacto.Theme.Border, 1, 0)
 	create("TextLabel", {
 		Text = config.Title or "Confirm",
 		Font = Enum.Font.GothamBold,
 		TextSize = 15,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -28, 0, 22),
@@ -3135,7 +3135,7 @@ function Google:Confirm(config)
 		Text = config.Description or "Are you sure?",
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextWrapped = true,
 		BackgroundTransparency = 1,
@@ -3147,10 +3147,10 @@ function Google:Confirm(config)
 		Text = config.CancelText or "Cancel",
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		Size = UDim2.fromOffset(92, 32),
 		Position = UDim2.new(1, -204, 1, -44),
-		BackgroundColor3 = Google.Theme.Hover,
+		BackgroundColor3 = Impacto.Theme.Hover,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = dialog
@@ -3163,7 +3163,7 @@ function Google:Confirm(config)
 		TextColor3 = Color3.new(1, 1, 1),
 		Size = UDim2.fromOffset(92, 32),
 		Position = UDim2.new(1, -106, 1, -44),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = dialog
@@ -3179,11 +3179,11 @@ function Google:Confirm(config)
 	end)
 end
 
-function Google:Prompt(config)
+function Impacto:Prompt(config)
 	config = config or {}
 	local callback = config.Callback or function() end
 	local gui = create("ScreenGui", {
-		Name = "GoogleUIPrompt",
+		Name = "ImpactoUIPrompt",
 		IgnoreGuiInset = true,
 		ResetOnSpawn = false,
 		ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
@@ -3199,17 +3199,17 @@ function Google:Prompt(config)
 		Size = UDim2.fromOffset(330, 170),
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		Parent = overlay
 	})
 	round(dialog, 12)
-	outline(dialog, Google.Theme.Border, 1, 0)
+	outline(dialog, Impacto.Theme.Border, 1, 0)
 	create("TextLabel", {
 		Text = config.Title or "Input",
 		Font = Enum.Font.GothamBold,
 		TextSize = 15,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -28, 0, 22),
@@ -3220,7 +3220,7 @@ function Google:Prompt(config)
 		Text = config.Description or "",
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextWrapped = true,
 		BackgroundTransparency = 1,
@@ -3233,27 +3233,27 @@ function Google:Prompt(config)
 		PlaceholderText = config.Placeholder or "",
 		Font = Enum.Font.Gotham,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
-		PlaceholderColor3 = Google.Theme.Subtle,
+		TextColor3 = Impacto.Theme.Text,
+		PlaceholderColor3 = Impacto.Theme.Subtle,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ClearTextOnFocus = false,
 		Size = UDim2.new(1, -28, 0, 34),
 		Position = UDim2.fromOffset(14, 72),
-		BackgroundColor3 = Google.Theme.Input,
+		BackgroundColor3 = Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		Parent = dialog
 	})
 	round(input, 8)
-	outline(input, Google.Theme.Border, 0.82, 1)
+	outline(input, Impacto.Theme.Border, 0.82, 1)
 	pad(input, 10, 10, 0, 0)
 	local cancel = create("TextButton", {
 		Text = config.CancelText or "Cancel",
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		Size = UDim2.fromOffset(92, 32),
 		Position = UDim2.new(1, -204, 1, -44),
-		BackgroundColor3 = Google.Theme.Hover,
+		BackgroundColor3 = Impacto.Theme.Hover,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = dialog
@@ -3266,7 +3266,7 @@ function Google:Prompt(config)
 		TextColor3 = Color3.new(1, 1, 1),
 		Size = UDim2.fromOffset(92, 32),
 		Position = UDim2.new(1, -106, 1, -44),
-		BackgroundColor3 = Google.Theme.Primary,
+		BackgroundColor3 = Impacto.Theme.Primary,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
 		Parent = dialog
@@ -3284,8 +3284,8 @@ function Google:Prompt(config)
 	input:CaptureFocus()
 end
 
-function Google:Cleanup()
-	for _, window in ipairs(table.clone(Google.Windows)) do
+function Impacto:Cleanup()
+	for _, window in ipairs(table.clone(Impacto.Windows)) do
 		window:Destroy()
 	end
 	if NotificationManager.Gui then
@@ -3333,7 +3333,7 @@ local function getStroke(instance, name, color, transparency, thickness)
 	end
 	local stroke = getChild(instance, name or "outline")
 	if not stroke then
-		stroke = outline(instance, color or Google.Theme.Border, transparency or 0.1, thickness or 1)
+		stroke = outline(instance, color or Impacto.Theme.Border, transparency or 0.1, thickness or 1)
 		stroke.Name = name or "outline"
 	else
 		stroke.Color = color or stroke.Color
@@ -3498,24 +3498,24 @@ function Section:CreateButton(config)
 	end
 	local function applyVariant(self)
 		local variant = string.lower(tostring(self.Variant or "Primary"))
-		local background = componentColor("Button", Google.Theme.Primary)
+		local background = componentColor("Button", Impacto.Theme.Primary)
 		local foreground = Color3.new(1, 1, 1)
 		local transparent = 0
 		if variant == "secondary" then
-			background = Google.Theme.CardAlt
-			foreground = Google.Theme.Text
+			background = Impacto.Theme.CardAlt
+			foreground = Impacto.Theme.Text
 		elseif variant == "ghost" then
-			background = Google.Theme.Hover
-			foreground = componentColor("Button", Google.Theme.Primary)
+			background = Impacto.Theme.Hover
+			foreground = componentColor("Button", Impacto.Theme.Primary)
 			transparent = 0.15
 		elseif variant == "danger" or variant == "red" then
-			background = Google.Theme.Danger
+			background = Impacto.Theme.Danger
 			foreground = Color3.new(1, 1, 1)
 		elseif variant == "success" or variant == "green" then
-			background = Google.Theme.Success
+			background = Impacto.Theme.Success
 			foreground = Color3.new(1, 1, 1)
 		elseif variant == "warning" or variant == "yellow" then
-			background = Google.Theme.Warning
+			background = Impacto.Theme.Warning
 			foreground = Color3.fromRGB(22, 28, 36)
 		end
 		if self.Button then
@@ -3531,7 +3531,7 @@ function Section:CreateButton(config)
 			self.DescriptionLabel.TextTransparency = variant == "secondary" and 0.35 or 0.25
 		end
 		if self.IconLabel then
-			Google.SetIconColor(self.IconLabel, foreground)
+			Impacto.SetIconColor(self.IconLabel, foreground)
 		end
 	end
 	function control:SetVariant(variant)
@@ -3604,8 +3604,8 @@ end
 
 local function paintToggle(control)
 	local enabled = control.Value and true or false
-	local toggleColor = componentColor("Toggle", Google.Theme.Primary)
-	local trackColor = enabled and toggleColor or Google.Theme.BorderStrong
+	local toggleColor = componentColor("Toggle", Impacto.Theme.Primary)
+	local trackColor = enabled and toggleColor or Impacto.Theme.BorderStrong
 	if control.Switch then
 		control.Switch.Size = UDim2.fromOffset(48, 24)
 		control.Switch.Position = UDim2.new(1, -48, 0.5, -12)
@@ -3644,8 +3644,8 @@ function Section:CreateToggle(config)
 			return self
 		end
 		self.Value = value and true or false
-		local toggleColor = componentColor("Toggle", Google.Theme.Primary)
-		local trackColor = self.Value and toggleColor or Google.Theme.BorderStrong
+		local toggleColor = componentColor("Toggle", Impacto.Theme.Primary)
+		local trackColor = self.Value and toggleColor or Impacto.Theme.BorderStrong
 		if self.Switch then
 			animate(self.Switch, {BackgroundColor3 = trackColor, BackgroundTransparency = 0}, motion.Base)
 		end
@@ -3702,7 +3702,7 @@ local function paintSlider(control, config)
 	if control.Track then
 		control.Track.Size = UDim2.new(1, -22, 0, 8)
 		control.Track.Position = UDim2.fromOffset(11, trackY)
-		control.Track.BackgroundColor3 = Google.Theme.Border
+		control.Track.BackgroundColor3 = Impacto.Theme.Border
 		control.Track.BackgroundTransparency = control.Disabled and 0.45 or 0
 		control.Track.BorderSizePixel = 0
 		control.Track.ClipsDescendants = false
@@ -3710,7 +3710,7 @@ local function paintSlider(control, config)
 		removeUiChildren(control.Track, "UIStroke")
 	end
 	if control.Fill then
-		control.Fill.BackgroundColor3 = componentColor("Slider", Google.Theme.Primary)
+		control.Fill.BackgroundColor3 = componentColor("Slider", Impacto.Theme.Primary)
 		control.Fill.BackgroundTransparency = 0
 		control.Fill.BorderSizePixel = 0
 		roundPill(control.Fill)
@@ -3718,7 +3718,7 @@ local function paintSlider(control, config)
 	end
 	if control.Knob then
 		control.Knob.Size = UDim2.fromOffset(18, 18)
-		control.Knob.BackgroundColor3 = componentColor("Slider", Google.Theme.Primary)
+		control.Knob.BackgroundColor3 = componentColor("Slider", Impacto.Theme.Primary)
 		control.Knob.BackgroundTransparency = 0
 		control.Knob.BorderSizePixel = 0
 		roundPill(control.Knob)
@@ -3734,7 +3734,7 @@ local function paintSlider(control, config)
 	control.FillGradient = nil
 	control.KnobScale = nil
 	if control.ValueLabel then
-		control.ValueLabel.TextColor3 = componentColor("SliderText", componentColor("Slider", Google.Theme.Primary))
+		control.ValueLabel.TextColor3 = componentColor("SliderText", componentColor("Slider", Impacto.Theme.Primary))
 	end
 end
 
@@ -3754,7 +3754,7 @@ function Section:CreateSlider(config)
 			Text = config.Description,
 			Font = Enum.Font.Gotham,
 			TextSize = 12,
-			TextColor3 = Google.Theme.Muted,
+			TextColor3 = Impacto.Theme.Muted,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			BackgroundTransparency = 1,
 			Size = UDim2.new(1, -70, 0, 16),
@@ -3846,7 +3846,7 @@ function Section:CreateSlider(config)
 			applyTheme(self)
 		end
 		if self.DescriptionLabel then
-			self.DescriptionLabel.TextColor3 = Google.Theme.Muted
+			self.DescriptionLabel.TextColor3 = Impacto.Theme.Muted
 		end
 		paintSlider(self, config)
 		self:UpdateVisual()
@@ -3880,22 +3880,22 @@ function Section:CreateDropdown(config)
 			if item:IsA("TextButton") then
 				local selected = optionSelected(self, item.Name)
 				item.BackgroundTransparency = selected and 0.15 or 1
-				local dropdownColor = componentColor("Dropdown", Google.Theme.Primary)
-				local dropdownSoft = componentColor("DropdownSoft", Google.Theme.PrimarySoft)
-				item.BackgroundColor3 = selected and dropdownSoft or Google.Theme.Hover
+				local dropdownColor = componentColor("Dropdown", Impacto.Theme.Primary)
+				local dropdownSoft = componentColor("DropdownSoft", Impacto.Theme.PrimarySoft)
+				item.BackgroundColor3 = selected and dropdownSoft or Impacto.Theme.Hover
 				local label = item:FindFirstChildOfClass("TextLabel")
 				if label then
-					label.TextColor3 = selected and dropdownColor or Google.Theme.Text
+					label.TextColor3 = selected and dropdownColor or Impacto.Theme.Text
 					label.Size = UDim2.new(1, -34, 1, 0)
 				end
 				local check = item:FindFirstChild("SelectedCheck")
 				if not check then
-					check = Google.CreateIcon("check", 14, dropdownColor, item, {
+					check = Impacto.CreateIcon("check", 14, dropdownColor, item, {
 						Name = "SelectedCheck",
 						Position = UDim2.new(1, -22, 0.5, -7)
 					})
 				end
-				Google.SetIconColor(check, dropdownColor)
+				Impacto.SetIconColor(check, dropdownColor)
 				check.Visible = selected
 			end
 		end
@@ -3917,13 +3917,13 @@ function Section:CreateDropdown(config)
 	function control:OpenMenu()
 		if self.Disabled then return self end
 		originalOpen(self)
-		if self.MainStroke then animate(self.MainStroke, {Color = componentColor("Dropdown", Google.Theme.Primary), Transparency = 0}, motion.Fast) end
+		if self.MainStroke then animate(self.MainStroke, {Color = componentColor("Dropdown", Impacto.Theme.Primary), Transparency = 0}, motion.Fast) end
 		return self
 	end
 	local originalClose = control.CloseMenu
 	function control:CloseMenu()
 		originalClose(self)
-		if self.MainStroke then animate(self.MainStroke, {Color = Google.Theme.Border, Transparency = 0.08}, motion.Fast) end
+		if self.MainStroke then animate(self.MainStroke, {Color = Impacto.Theme.Border, Transparency = 0.08}, motion.Fast) end
 		return self
 	end
 	local originalSelect = control.Select
@@ -3979,7 +3979,7 @@ function Section:CreateDropdown(config)
 	function control:ApplyTheme()
 		if originalApply then originalApply(self) end
 		if self.Arrow then
-			Google.SetIconColor(self.Arrow, componentColor("Dropdown", Google.Theme.Muted))
+			Impacto.SetIconColor(self.Arrow, componentColor("Dropdown", Impacto.Theme.Muted))
 		end
 		decorateOptions(self)
 	end
@@ -4003,18 +4003,18 @@ function Section:CreateTextbox(config)
 	guardCallback(control)
 	if control.Entry then
 		round(control.Entry, tonumber(config.CornerRadius) or 10)
-		control.EntryStroke = control.EntryStroke or getStroke(control.Entry, "TextboxStroke", Google.Theme.Border, 0.08, 1)
-		control.EntryGradient = getGradient(control.Entry, Google.Theme.Input, blend(Google.Theme.Input, Google.Theme.Hover, 0.35), 90)
+		control.EntryStroke = control.EntryStroke or getStroke(control.Entry, "TextboxStroke", Impacto.Theme.Border, 0.08, 1)
+		control.EntryGradient = getGradient(control.Entry, Impacto.Theme.Input, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.35), 90)
 	end
 	if config.ClearButton ~= false and control.Entry then
 		control.ClearButton = create("TextButton", {
 			Text = "×",
 			Font = Enum.Font.GothamBold,
 			TextSize = 14,
-			TextColor3 = Google.Theme.Muted,
+			TextColor3 = Impacto.Theme.Muted,
 			Size = UDim2.fromOffset(24, 24),
 			Position = UDim2.new(1, -28, 0, 28),
-			BackgroundColor3 = Google.Theme.Hover,
+			BackgroundColor3 = Impacto.Theme.Hover,
 			BackgroundTransparency = 1,
 			BorderSizePixel = 0,
 			AutoButtonColor = false,
@@ -4077,13 +4077,13 @@ function Section:CreateTextbox(config)
 		if originalApply then originalApply(self) end
 		if self.EntryGradient then
 			self.EntryGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Google.Theme.Input),
-				ColorSequenceKeypoint.new(1, blend(Google.Theme.Input, Google.Theme.Hover, 0.35))
+				ColorSequenceKeypoint.new(0, Impacto.Theme.Input),
+				ColorSequenceKeypoint.new(1, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.35))
 			})
 		end
 		if self.ClearButton then
-			self.ClearButton.BackgroundColor3 = Google.Theme.Hover
-			self.ClearButton.TextColor3 = Google.Theme.Muted
+			self.ClearButton.BackgroundColor3 = Impacto.Theme.Hover
+			self.ClearButton.TextColor3 = Impacto.Theme.Muted
 		end
 	end
 	addDisabledState(control, function(self)
@@ -4104,7 +4104,7 @@ function Section:CreateKeybind(config)
 	guardCallback(control)
 	if control.Button then
 		round(control.Button, tonumber(config.CornerRadius) or 10)
-		control.ButtonGradient = getGradient(control.Button, Google.Theme.Input, blend(Google.Theme.Input, Google.Theme.Hover, 0.45), 90)
+		control.ButtonGradient = getGradient(control.Button, Impacto.Theme.Input, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.45), 90)
 	end
 	function control:SetText(text)
 		setText(self.Label, text)
@@ -4130,8 +4130,8 @@ function Section:CreateKeybind(config)
 		if originalApply then originalApply(self) end
 		if self.ButtonGradient then
 			self.ButtonGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Google.Theme.Input),
-				ColorSequenceKeypoint.new(1, blend(Google.Theme.Input, Google.Theme.Hover, 0.45))
+				ColorSequenceKeypoint.new(0, Impacto.Theme.Input),
+				ColorSequenceKeypoint.new(1, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.45))
 			})
 		end
 	end
@@ -4153,7 +4153,7 @@ function Section:CreateColorPicker(config)
 	guardCallback(control)
 	if control.Button then
 		round(control.Button, tonumber(config.CornerRadius) or 10)
-		control.ButtonStroke = control.ButtonStroke or getStroke(control.Button, "ColorButtonStroke", Google.Theme.Border, 0.08, 1)
+		control.ButtonStroke = control.ButtonStroke or getStroke(control.Button, "ColorButtonStroke", Impacto.Theme.Border, 0.08, 1)
 	end
 	function control:GetHex()
 		return formatHex(self.Value)
@@ -4185,7 +4185,7 @@ function Section:CreateColorPicker(config)
 	local originalApply = control.ApplyTheme
 	function control:ApplyTheme()
 		if originalApply then originalApply(self) end
-		if self.ButtonStroke then self.ButtonStroke.Color = Google.Theme.Border end
+		if self.ButtonStroke then self.ButtonStroke.Color = Impacto.Theme.Border end
 	end
 	addDisabledState(control, function(self)
 		if self.Button then self.Button.BackgroundTransparency = self.Disabled and 0.45 or 0 end
@@ -4240,7 +4240,7 @@ function Section:CreateParagraph(config)
 	control.Variant = config.Variant or "Default"
 	if control.Instance then
 		round(control.Instance, tonumber(config.CornerRadius) or 10)
-		control.ParagraphGradient = getGradient(control.Instance, Google.Theme.CardAlt, blend(Google.Theme.CardAlt, Google.Theme.Hover, 0.35), 90)
+		control.ParagraphGradient = getGradient(control.Instance, Impacto.Theme.CardAlt, blend(Impacto.Theme.CardAlt, Impacto.Theme.Hover, 0.35), 90)
 	end
 	function control:SetTitle(text)
 		if self.TitleLabel then setText(self.TitleLabel, text) end
@@ -4252,17 +4252,17 @@ function Section:CreateParagraph(config)
 	end
 	local function applyParagraphVariant(self)
 		local variant = string.lower(tostring(self.Variant or "Default"))
-		local strokeColor = Google.Theme.Border
-		local bg = Google.Theme.CardAlt
+		local strokeColor = Impacto.Theme.Border
+		local bg = Impacto.Theme.CardAlt
 		if variant == "info" then
-			strokeColor = Google.Theme.Primary
-			bg = Google.Theme.PrimarySoft
+			strokeColor = Impacto.Theme.Primary
+			bg = Impacto.Theme.PrimarySoft
 		elseif variant == "success" then
-			strokeColor = Google.Theme.Success
+			strokeColor = Impacto.Theme.Success
 		elseif variant == "warning" then
-			strokeColor = Google.Theme.Warning
+			strokeColor = Impacto.Theme.Warning
 		elseif variant == "danger" then
-			strokeColor = Google.Theme.Danger
+			strokeColor = Impacto.Theme.Danger
 		end
 		self.Instance.BackgroundColor3 = bg
 		if self.outline then
@@ -4273,7 +4273,7 @@ function Section:CreateParagraph(config)
 		if self.ParagraphGradient then
 			self.ParagraphGradient.Color = ColorSequence.new({
 				ColorSequenceKeypoint.new(0, bg),
-				ColorSequenceKeypoint.new(1, blend(bg, Google.Theme.Hover, 0.35))
+				ColorSequenceKeypoint.new(1, blend(bg, Impacto.Theme.Hover, 0.35))
 			})
 		end
 	end
@@ -4297,7 +4297,7 @@ function Section:CreateImage(config)
 	local control = createImageBase(self, config)
 	if control.ImageFrame then
 		round(control.ImageFrame, tonumber(config.ImageCornerRadius) or tonumber(config.CornerRadius) or 10)
-		control.ImageGradient = getGradient(control.ImageFrame, Google.Theme.Input, blend(Google.Theme.Input, Google.Theme.Hover, 0.35), 90)
+		control.ImageGradient = getGradient(control.ImageFrame, Impacto.Theme.Input, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.35), 90)
 	end
 	if control.Image then
 		control.Image.ImageTransparency = tonumber(config.Transparency) or 0
@@ -4343,8 +4343,8 @@ function Section:CreateImage(config)
 		if originalApply then originalApply(self) end
 		if self.ImageGradient then
 			self.ImageGradient.Color = ColorSequence.new({
-				ColorSequenceKeypoint.new(0, Google.Theme.Input),
-				ColorSequenceKeypoint.new(1, blend(Google.Theme.Input, Google.Theme.Hover, 0.35))
+				ColorSequenceKeypoint.new(0, Impacto.Theme.Input),
+				ColorSequenceKeypoint.new(1, blend(Impacto.Theme.Input, Impacto.Theme.Hover, 0.35))
 			})
 		end
 	end
@@ -4358,10 +4358,10 @@ function Section:CreateDivider(config)
 	end
 	config = config or {}
 	local control = createDividerBase(self, config)
-	local color = config.Color or Google.Theme.Border
+	local color = config.Color or Impacto.Theme.Border
 	if control.Left then getGradient(control.Left, Color3.fromRGB(255, 255, 255), color, 0) end
 	if control.Right then getGradient(control.Right, color, Color3.fromRGB(255, 255, 255), 0) end
-	if control.Line then getGradient(control.Line, Google.Theme.Border, blend(Google.Theme.Border, Google.Theme.Primary, 0.35), 0) end
+	if control.Line then getGradient(control.Line, Impacto.Theme.Border, blend(Impacto.Theme.Border, Impacto.Theme.Primary, 0.35), 0) end
 	function control:SetText(text)
 		if self.Label then setText(self.Label, text) end
 		return self
@@ -4386,21 +4386,21 @@ function Section:CreateDivider(config)
 	return control
 end
 
-local baseThemes = Google.Themes
-Google.Themes = {
+local baseThemes = Impacto.Themes
+Impacto.Themes = {
 	Blue = baseThemes.Blue,
-	Google = baseThemes.Google,
+	Impacto = baseThemes.Impacto,
 	Red = baseThemes.Red,
 	Yellow = baseThemes.Yellow,
 	Green = baseThemes.Green,
 	DarkBlue = baseThemes.DarkBlue,
-	DarkGoogle = baseThemes.DarkGoogle,
+	DarkImpacto = baseThemes.DarkImpacto,
 	DarkRed = baseThemes.DarkRed,
 	DarkYellow = baseThemes.DarkYellow,
 	DarkGreen = baseThemes.DarkGreen
 }
-Google.ActiveTheme = Google.Themes[Google.ActiveTheme] and Google.ActiveTheme or "Google"
-Google.Theme = Google.Themes[Google.ActiveTheme]
+Impacto.ActiveTheme = Impacto.Themes[Impacto.ActiveTheme] and Impacto.ActiveTheme or "Impacto"
+Impacto.Theme = Impacto.Themes[Impacto.ActiveTheme]
 
 
 local gridMethods = {}
@@ -4417,7 +4417,7 @@ local function wipe(container, keepLayouts)
 end
 
 local function glyph(name, size, color, parent, position)
-	return Google.CreateIcon(name, size, color, parent, position or {
+	return Impacto.CreateIcon(name, size, color, parent, position or {
 		AnchorPoint = Vector2.new(0.5, 0.5),
 		Position = UDim2.fromScale(0.5, 0.5)
 	})
@@ -4433,14 +4433,14 @@ local function softCard(parent, height, title)
 	local frame = create("Frame", {
 		Name = title or "Card",
 		Size = UDim2.new(1, 0, 0, height),
-		BackgroundColor3 = Google.Theme.CardAlt,
+		BackgroundColor3 = Impacto.Theme.CardAlt,
 		BackgroundTransparency = 0,
 		BorderSizePixel = 0,
 		ClipsDescendants = true,
 		Parent = parent
 	})
 	round(frame, 14)
-	local stroke = outline(frame, Google.Theme.Border, 1, 0)
+	local stroke = outline(frame, Impacto.Theme.Border, 1, 0)
 	return frame, stroke
 end
 
@@ -4582,13 +4582,13 @@ local function makeCard(parent, config, grid)
 			Name = "IconWrap",
 			Size = UDim2.fromOffset(34, 34),
 			Position = UDim2.fromOffset(12, 14),
-			BackgroundColor3 = Google.Theme.PrimarySoft,
+			BackgroundColor3 = Impacto.Theme.PrimarySoft,
 			BorderSizePixel = 0,
 			Parent = frame
 		})
 		round(iconWrap, 10)
 		card.IconWrap = iconWrap
-		card.Icon = glyph(config.Icon, 18, Google.Theme.Primary, iconWrap)
+		card.Icon = glyph(config.Icon, 18, Impacto.Theme.Primary, iconWrap)
 		x = 56
 	elseif config.Image then
 		local image = create("ImageLabel", {
@@ -4609,7 +4609,7 @@ local function makeCard(parent, config, grid)
 		Text = card.Title,
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
@@ -4623,7 +4623,7 @@ local function makeCard(parent, config, grid)
 		Text = card.Subtitle,
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
@@ -4657,8 +4657,8 @@ local function makeCard(parent, config, grid)
 				Text = tostring(badgeText),
 				Font = Enum.Font.GothamBold,
 				TextSize = 10,
-				TextColor3 = Google.Theme.Primary,
-				BackgroundColor3 = Google.Theme.PrimarySoft,
+				TextColor3 = Impacto.Theme.Primary,
+				BackgroundColor3 = Impacto.Theme.PrimarySoft,
 				BorderSizePixel = 0,
 				Size = UDim2.fromOffset(math.clamp(#tostring(badgeText) * 6 + 16, 38, 100), 18),
 				Parent = self.BadgeRow
@@ -4684,15 +4684,15 @@ local function makeCard(parent, config, grid)
 		return self
 	end
 	function card:ApplyTheme()
-		self.Instance.BackgroundColor3 = Google.Theme.CardAlt
+		self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
 		self.Instance.BackgroundTransparency = 0
-		self.Stroke.Color = Google.Theme.Border
+		self.Stroke.Color = Impacto.Theme.Border
 		self.Stroke.Transparency = 1
 		self.Stroke.Thickness = 0
-		self.TitleLabel.TextColor3 = Google.Theme.Text
-		self.SubtitleLabel.TextColor3 = Google.Theme.Muted
-		if self.IconWrap then self.IconWrap.BackgroundColor3 = Google.Theme.PrimarySoft end
-		if self.Icon then Google.SetIconColor(self.Icon, Google.Theme.Primary) end
+		self.TitleLabel.TextColor3 = Impacto.Theme.Text
+		self.SubtitleLabel.TextColor3 = Impacto.Theme.Muted
+		if self.IconWrap then self.IconWrap.BackgroundColor3 = Impacto.Theme.PrimarySoft end
+		if self.Icon then Impacto.SetIconColor(self.Icon, Impacto.Theme.Primary) end
 		self:DrawBadges()
 	end
 	function card:Destroy()
@@ -4742,7 +4742,7 @@ local function makeImageCard(parent, config, grid)
 		Name = "Image",
 		Size = UDim2.new(1, -14, 1, -(titleHeight + 14)),
 		Position = UDim2.fromOffset(7, 7),
-		BackgroundColor3 = Google.Theme.Input,
+		BackgroundColor3 = Impacto.Theme.Input,
 		BorderSizePixel = 0,
 		Image = ResolveImageSource(config.Image or config.ImageId or config.Source or config.AssetId),
 		ScaleType = ResolveImageScaleType(config.ScaleType or "Crop"),
@@ -4751,13 +4751,13 @@ local function makeImageCard(parent, config, grid)
 	})
 	round(image, 10)
 	card.Image = image
-	card.ImageStroke = outline(image, Google.Theme.Border, 0.86, 1)
+	card.ImageStroke = outline(image, Impacto.Theme.Border, 0.86, 1)
 	local title = create("TextLabel", {
 		Name = "Title",
 		Text = card.Title,
 		Font = Enum.Font.GothamBold,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextTruncate = Enum.TextTruncate.AtEnd,
 		BackgroundTransparency = 1,
@@ -4786,16 +4786,16 @@ local function makeImageCard(parent, config, grid)
 		return self
 	end
 	function card:ApplyTheme()
-		self.Instance.BackgroundColor3 = Google.Theme.CardAlt
+		self.Instance.BackgroundColor3 = Impacto.Theme.CardAlt
 		self.Instance.BackgroundTransparency = 0
-		self.Stroke.Color = Google.Theme.Border
+		self.Stroke.Color = Impacto.Theme.Border
 		self.Stroke.Transparency = 1
 		self.Stroke.Thickness = 0
-		self.Image.BackgroundColor3 = Google.Theme.Input
-		self.ImageStroke.Color = Google.Theme.Border
+		self.Image.BackgroundColor3 = Impacto.Theme.Input
+		self.ImageStroke.Color = Impacto.Theme.Border
 		self.ImageStroke.Transparency = 0.86
 		self.ImageStroke.Thickness = 1
-		self.TitleLabel.TextColor3 = Google.Theme.Text
+		self.TitleLabel.TextColor3 = Impacto.Theme.Text
 	end
 	function card:Destroy()
 		disconnectAll(self.Connections)
@@ -4837,7 +4837,7 @@ function Section:CreateGrid(config)
 		BorderSizePixel = 0,
 		CanvasSize = UDim2.fromOffset(0, 0),
 		ScrollBarThickness = 3,
-		ScrollBarImageColor3 = Google.Theme.BorderStrong,
+		ScrollBarImageColor3 = Impacto.Theme.BorderStrong,
 		Parent = grid.Instance
 	})
 	grid.Scroller = scroller
@@ -4853,7 +4853,7 @@ function Section:CreateGrid(config)
 		refreshGridSize(grid)
 	end)
 	function grid:ApplyTheme()
-		self.Scroller.ScrollBarImageColor3 = Google.Theme.BorderStrong
+		self.Scroller.ScrollBarImageColor3 = Impacto.Theme.BorderStrong
 		for _, item in ipairs(self.Items) do
 			if item.ApplyTheme then item:ApplyTheme() end
 		end
@@ -4928,7 +4928,7 @@ function Section:CreateSearchBox(config)
 	frame.Size = UDim2.new(1, 0, 0, 40)
 	control.BoxFrame = frame
 	control.Stroke = stroke
-	control.Icon = glyph(config.Icon or "search", 17, Google.Theme.Muted, frame, {
+	control.Icon = glyph(config.Icon or "search", 17, Impacto.Theme.Muted, frame, {
 		Size = UDim2.fromOffset(17, 17),
 		Position = UDim2.fromOffset(13, 12)
 	})
@@ -4938,8 +4938,8 @@ function Section:CreateSearchBox(config)
 		PlaceholderText = config.Placeholder or "Search...",
 		Font = Enum.Font.Gotham,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
-		PlaceholderColor3 = Google.Theme.Subtle,
+		TextColor3 = Impacto.Theme.Text,
+		PlaceholderColor3 = Impacto.Theme.Subtle,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		ClearTextOnFocus = false,
 		BackgroundTransparency = 1,
@@ -4953,7 +4953,7 @@ function Section:CreateSearchBox(config)
 		Text = "",
 		Size = UDim2.fromOffset(28, 28),
 		Position = UDim2.new(1, -34, 0.5, -14),
-		BackgroundColor3 = Google.Theme.Hover,
+		BackgroundColor3 = Impacto.Theme.Hover,
 		BackgroundTransparency = 1,
 		BorderSizePixel = 0,
 		AutoButtonColor = false,
@@ -4962,7 +4962,7 @@ function Section:CreateSearchBox(config)
 	})
 	round(clear, 8)
 	control.ClearButton = clear
-	control.ClearIcon = glyph("x", 13, Google.Theme.Muted, clear)
+	control.ClearIcon = glyph("x", 13, Impacto.Theme.Muted, clear)
 	function control:Search()
 		self.Query = self.Input.Text
 		self.OnSearch(self.Query)
@@ -4979,13 +4979,13 @@ function Section:CreateSearchBox(config)
 		return self.Input.Text
 	end
 	function control:ApplyTheme()
-		self.BoxFrame.BackgroundColor3 = Google.Theme.CardAlt
-		self.Stroke.Color = Google.Theme.Border
-		self.Input.TextColor3 = Google.Theme.Text
-		self.Input.PlaceholderColor3 = Google.Theme.Subtle
-		self.ClearButton.BackgroundColor3 = Google.Theme.Hover
-		Google.SetIconColor(self.Icon, Google.Theme.Muted)
-		Google.SetIconColor(self.ClearIcon, Google.Theme.Muted)
+		self.BoxFrame.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.Stroke.Color = Impacto.Theme.Border
+		self.Input.TextColor3 = Impacto.Theme.Text
+		self.Input.PlaceholderColor3 = Impacto.Theme.Subtle
+		self.ClearButton.BackgroundColor3 = Impacto.Theme.Hover
+		Impacto.SetIconColor(self.Icon, Impacto.Theme.Muted)
+		Impacto.SetIconColor(self.ClearIcon, Impacto.Theme.Muted)
 	end
 	bind(control.Connections, input:GetPropertyChangedSignal("Text"), function()
 		control.Query = input.Text
@@ -5032,11 +5032,11 @@ function Section:CreateFilterBar(config)
 	})
 	control.Layout = layout
 	local function styleChip(chip, active)
-		chip.BackgroundColor3 = active and Google.Theme.PrimarySoft or Google.Theme.CardAlt
-		chip.TextColor3 = active and Google.Theme.Primary or Google.Theme.Muted
+		chip.BackgroundColor3 = active and Impacto.Theme.PrimarySoft or Impacto.Theme.CardAlt
+		chip.TextColor3 = active and Impacto.Theme.Primary or Impacto.Theme.Muted
 		local stroke = control.ChipStrokes[chip.Name]
 		if stroke then
-			stroke.Color = active and Google.Theme.Primary or Google.Theme.Border
+			stroke.Color = active and Impacto.Theme.Primary or Impacto.Theme.Border
 			stroke.Transparency = active and 0.18 or 0.08
 		end
 	end
@@ -5073,7 +5073,7 @@ function Section:CreateFilterBar(config)
 			Parent = scroller
 		})
 		roundFull(chip)
-		control.ChipStrokes[name] = outline(chip, Google.Theme.Border, 0.84, 1)
+		control.ChipStrokes[name] = outline(chip, Impacto.Theme.Border, 0.84, 1)
 		control.Chips[name] = chip
 		styleChip(chip, active)
 		bind(control.Connections, chip.MouseButton1Click, function()
@@ -5122,7 +5122,7 @@ function Section:CreateKeyValueList(config)
 				Text = tostring(key or ""),
 				Font = Enum.Font.Gotham,
 				TextSize = 12,
-				TextColor3 = Google.Theme.Muted,
+				TextColor3 = Impacto.Theme.Muted,
 				TextXAlignment = Enum.TextXAlignment.Left,
 				TextTruncate = Enum.TextTruncate.AtEnd,
 				BackgroundTransparency = 1,
@@ -5135,7 +5135,7 @@ function Section:CreateKeyValueList(config)
 				Text = tostring(value or ""),
 				Font = Enum.Font.GothamBold,
 				TextSize = 12,
-				TextColor3 = Google.Theme.Text,
+				TextColor3 = Impacto.Theme.Text,
 				TextXAlignment = Enum.TextXAlignment.Right,
 				TextTruncate = Enum.TextTruncate.AtEnd,
 				BackgroundTransparency = 1,
@@ -5177,7 +5177,7 @@ function Section:CreateCodeBlock(config)
 	local header = create("Frame", {
 		Name = "Header",
 		Size = UDim2.new(1, 0, 0, 30),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		Parent = frame
 	})
@@ -5187,7 +5187,7 @@ function Section:CreateCodeBlock(config)
 		Text = string.upper(control.Language),
 		Font = Enum.Font.GothamBold,
 		TextSize = 11,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -100, 1, 0),
@@ -5200,8 +5200,8 @@ function Section:CreateCodeBlock(config)
 			Text = "Copy",
 			Font = Enum.Font.GothamBold,
 			TextSize = 11,
-			TextColor3 = Google.Theme.Primary,
-			BackgroundColor3 = Google.Theme.PrimarySoft,
+			TextColor3 = Impacto.Theme.Primary,
+			BackgroundColor3 = Impacto.Theme.PrimarySoft,
 			BorderSizePixel = 0,
 			AutoButtonColor = false,
 			Size = UDim2.fromOffset(58, 22),
@@ -5224,7 +5224,7 @@ function Section:CreateCodeBlock(config)
 		BorderSizePixel = 0,
 		CanvasSize = UDim2.fromOffset(0, 0),
 		ScrollBarThickness = 3,
-		ScrollBarImageColor3 = Google.Theme.BorderStrong,
+		ScrollBarImageColor3 = Impacto.Theme.BorderStrong,
 		Parent = frame
 	})
 	control.Scroller = scroller
@@ -5234,7 +5234,7 @@ function Section:CreateCodeBlock(config)
 		RichText = control.Language == "lua" or control.Language == "luau",
 		Font = Enum.Font.Code,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		TextYAlignment = Enum.TextYAlignment.Top,
 		TextWrapped = control.Wrap,
@@ -5257,14 +5257,14 @@ function Section:CreateCodeBlock(config)
 		return self.Code
 	end
 	function control:ApplyTheme()
-		self.Frame.BackgroundColor3 = Google.Theme.CardAlt
-		self.Header.BackgroundColor3 = Google.Theme.Card
-		self.Stroke.Color = Google.Theme.Border
-		self.Label.TextColor3 = Google.Theme.Text
-		self.Scroller.ScrollBarImageColor3 = Google.Theme.BorderStrong
+		self.Frame.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.Header.BackgroundColor3 = Impacto.Theme.Card
+		self.Stroke.Color = Impacto.Theme.Border
+		self.Label.TextColor3 = Impacto.Theme.Text
+		self.Scroller.ScrollBarImageColor3 = Impacto.Theme.BorderStrong
 		if self.CopyButton then
-			self.CopyButton.BackgroundColor3 = Google.Theme.PrimarySoft
-			self.CopyButton.TextColor3 = Google.Theme.Primary
+			self.CopyButton.BackgroundColor3 = Impacto.Theme.PrimarySoft
+			self.CopyButton.TextColor3 = Impacto.Theme.Primary
 		end
 	end
 	bind(control.Connections, label:GetPropertyChangedSignal("AbsoluteSize"), function()
@@ -5290,19 +5290,19 @@ function Section:CreateEmptyState(config)
 		Size = UDim2.fromOffset(38, 38),
 		AnchorPoint = Vector2.new(0.5, 0),
 		Position = UDim2.new(0.5, 0, 0, 18),
-		BackgroundColor3 = Google.Theme.PrimarySoft,
+		BackgroundColor3 = Impacto.Theme.PrimarySoft,
 		BorderSizePixel = 0,
 		Parent = frame
 	})
 	round(iconWrap, 12)
 	control.IconWrap = iconWrap
-	control.Icon = glyph(config.Icon or "search", 20, Google.Theme.Primary, iconWrap)
+	control.Icon = glyph(config.Icon or "search", 20, Impacto.Theme.Primary, iconWrap)
 	control.TitleLabel = create("TextLabel", {
 		Name = "Title",
 		Text = config.Title or "Nothing here",
 		Font = Enum.Font.GothamBold,
 		TextSize = 14,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Center,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -24, 0, 22),
@@ -5314,7 +5314,7 @@ function Section:CreateEmptyState(config)
 		Text = config.Text or config.Description or "",
 		Font = Enum.Font.Gotham,
 		TextSize = 12,
-		TextColor3 = Google.Theme.Muted,
+		TextColor3 = Impacto.Theme.Muted,
 		TextWrapped = true,
 		TextXAlignment = Enum.TextXAlignment.Center,
 		BackgroundTransparency = 1,
@@ -5329,7 +5329,7 @@ function Section:CreateEmptyState(config)
 			Font = Enum.Font.GothamBold,
 			TextSize = 12,
 			TextColor3 = Color3.new(1, 1, 1),
-			BackgroundColor3 = Google.Theme.Primary,
+			BackgroundColor3 = Impacto.Theme.Primary,
 			BorderSizePixel = 0,
 			AutoButtonColor = false,
 			Size = UDim2.fromOffset(112, 28),
@@ -5344,13 +5344,13 @@ function Section:CreateEmptyState(config)
 		end)
 	end
 	function control:ApplyTheme()
-		self.Frame.BackgroundColor3 = Google.Theme.CardAlt
-		self.Stroke.Color = Google.Theme.Border
-		self.IconWrap.BackgroundColor3 = Google.Theme.PrimarySoft
-		Google.SetIconColor(self.Icon, Google.Theme.Primary)
-		self.TitleLabel.TextColor3 = Google.Theme.Text
-		self.TextLabel.TextColor3 = Google.Theme.Muted
-		if self.ActionButton then self.ActionButton.BackgroundColor3 = Google.Theme.Primary end
+		self.Frame.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.Stroke.Color = Impacto.Theme.Border
+		self.IconWrap.BackgroundColor3 = Impacto.Theme.PrimarySoft
+		Impacto.SetIconColor(self.Icon, Impacto.Theme.Primary)
+		self.TitleLabel.TextColor3 = Impacto.Theme.Text
+		self.TextLabel.TextColor3 = Impacto.Theme.Muted
+		if self.ActionButton then self.ActionButton.BackgroundColor3 = Impacto.Theme.Primary end
 	end
 	return control
 end
@@ -5371,7 +5371,7 @@ function Section:CreateLoading(config)
 		Text = "•",
 		Font = Enum.Font.GothamBold,
 		TextSize = 26,
-		TextColor3 = Google.Theme.Primary,
+		TextColor3 = Impacto.Theme.Primary,
 		TextXAlignment = Enum.TextXAlignment.Center,
 		BackgroundTransparency = 1,
 		Size = UDim2.fromOffset(34, 40),
@@ -5384,7 +5384,7 @@ function Section:CreateLoading(config)
 		Text = config.Text or "Loading...",
 		Font = Enum.Font.GothamBold,
 		TextSize = 13,
-		TextColor3 = Google.Theme.Text,
+		TextColor3 = Impacto.Theme.Text,
 		TextXAlignment = Enum.TextXAlignment.Left,
 		BackgroundTransparency = 1,
 		Size = UDim2.new(1, -58, 1, 0),
@@ -5404,10 +5404,10 @@ function Section:CreateLoading(config)
 		return self
 	end
 	function control:ApplyTheme()
-		self.Frame.BackgroundColor3 = Google.Theme.CardAlt
-		self.Stroke.Color = Google.Theme.Border
-		self.TextLabel.TextColor3 = Google.Theme.Text
-		self.Spinner.TextColor3 = Google.Theme.Primary
+		self.Frame.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.Stroke.Color = Impacto.Theme.Border
+		self.TextLabel.TextColor3 = Impacto.Theme.Text
+		self.Spinner.TextColor3 = Impacto.Theme.Primary
 	end
 	local marks = {"•", "••", "•••", "••"}
 	task.spawn(function()
@@ -5448,7 +5448,7 @@ function Section:CreateTable(config)
 		Name = "Header",
 		Size = UDim2.new(1, -8, 0, rowHeight),
 		Position = UDim2.fromOffset(4, 4),
-		BackgroundColor3 = Google.Theme.Card,
+		BackgroundColor3 = Impacto.Theme.Card,
 		BorderSizePixel = 0,
 		Parent = frame
 	})
@@ -5462,7 +5462,7 @@ function Section:CreateTable(config)
 		BorderSizePixel = 0,
 		CanvasSize = UDim2.fromOffset(0, 0),
 		ScrollBarThickness = 3,
-		ScrollBarImageColor3 = Google.Theme.BorderStrong,
+		ScrollBarImageColor3 = Impacto.Theme.BorderStrong,
 		Parent = frame
 	})
 	control.Body = body
@@ -5478,7 +5478,7 @@ function Section:CreateTable(config)
 			Text = tostring(text or ""),
 			Font = bold and Enum.Font.GothamBold or Enum.Font.Gotham,
 			TextSize = 12,
-			TextColor3 = bold and Google.Theme.Text or Google.Theme.Muted,
+			TextColor3 = bold and Impacto.Theme.Text or Impacto.Theme.Muted,
 			TextXAlignment = Enum.TextXAlignment.Left,
 			TextTruncate = Enum.TextTruncate.AtEnd,
 			BackgroundTransparency = 1,
@@ -5504,12 +5504,12 @@ function Section:CreateTable(config)
 				Text = "",
 				AutoButtonColor = false,
 				Size = UDim2.new(1, -2, 0, self.RowHeight),
-				BackgroundColor3 = Google.Theme.CardAlt,
+				BackgroundColor3 = Impacto.Theme.CardAlt,
 				BorderSizePixel = 0,
 				Parent = self.Body
 			})
 			round(line, 8)
-			outline(line, Google.Theme.Border, 0.9, 1)
+			outline(line, Impacto.Theme.Border, 0.9, 1)
 			for i = 1, count do
 				cell(line, row[i], i, count, false)
 			end
@@ -5537,10 +5537,10 @@ function Section:CreateTable(config)
 		return self
 	end
 	function control:ApplyTheme()
-		self.Frame.BackgroundColor3 = Google.Theme.CardAlt
-		self.Stroke.Color = Google.Theme.Border
-		self.Header.BackgroundColor3 = Google.Theme.Card
-		self.Body.ScrollBarImageColor3 = Google.Theme.BorderStrong
+		self.Frame.BackgroundColor3 = Impacto.Theme.CardAlt
+		self.Stroke.Color = Impacto.Theme.Border
+		self.Header.BackgroundColor3 = Impacto.Theme.Card
+		self.Body.ScrollBarImageColor3 = Impacto.Theme.BorderStrong
 		self:Draw()
 	end
 	bind(control.Connections, bodyLayout:GetPropertyChangedSignal("AbsoluteContentSize"), function()
@@ -5784,7 +5784,7 @@ local function normalizeLoadedValue(kind, value, control)
 end
 
 local function autoSaveFlags()
-	local manager = Google.ConfigManager
+	local manager = Impacto.ConfigManager
 	if manager and manager.AutoSave then
 		manager:Save()
 	end
@@ -5801,7 +5801,7 @@ local function registerFlag(control, config, kind)
 	flag = tostring(flag)
 	control.Flag = flag
 	control.CallbackOnLoad = config.CallbackOnLoad == true
-	Google.Options[flag] = control
+	Impacto.Options[flag] = control
 
 	local previousGet = control.Get
 	local previousSet = control.Set
@@ -5862,48 +5862,48 @@ local function registerFlag(control, config, kind)
 			end
 		end
 		self.LoadingFromConfig = wasLoading
-		Google.Flags[flag] = self:Get()
+		Impacto.Flags[flag] = self:Get()
 		if not fromConfig then
 			autoSaveFlags()
 		end
 		return self
 	end
 
-	if Google.Flags[flag] ~= nil then
-		control:Set(Google.Flags[flag], true)
+	if Impacto.Flags[flag] ~= nil then
+		control:Set(Impacto.Flags[flag], true)
 	else
-		Google.Flags[flag] = control:Get()
+		Impacto.Flags[flag] = control:Get()
 	end
 	return control
 end
 
-function Google:SetFlag(flag, value, fromConfig)
+function Impacto:SetFlag(flag, value, fromConfig)
 	flag = tostring(flag)
-	local option = Google.Options[flag]
+	local option = Impacto.Options[flag]
 	if option and type(option.Set) == "function" then
 		option:Set(value, fromConfig)
-		Google.Flags[flag] = type(option.Get) == "function" and option:Get() or safeValue(value)
+		Impacto.Flags[flag] = type(option.Get) == "function" and option:Get() or safeValue(value)
 	else
-		Google.Flags[flag] = safeValue(value)
+		Impacto.Flags[flag] = safeValue(value)
 		if not fromConfig then
 			autoSaveFlags()
 		end
 	end
-	return Google.Flags[flag]
+	return Impacto.Flags[flag]
 end
 
-function Google:GetFlag(flag, default)
-	local value = Google.Flags[tostring(flag)]
+function Impacto:GetFlag(flag, default)
+	local value = Impacto.Flags[tostring(flag)]
 	if value == nil then
 		return default
 	end
 	return value
 end
 
-function Google:CreateConfigManager(config)
+function Impacto:CreateConfigManager(config)
 	config = config or {}
 	local manager = {}
-	manager.Folder = config.Folder or "GoogleUI/Configs"
+	manager.Folder = config.Folder or "ImpactoUI/Configs"
 	manager.Extension = config.Extension or ".json"
 	manager.AutoSave = config.AutoSave == true
 	manager.CurrentConfig = config.Default or config.Name or "default"
@@ -5990,7 +5990,7 @@ function Google:CreateConfigManager(config)
 			return false, message
 		end
 		local data = {}
-		for flag, option in pairs(Google.Options) do
+		for flag, option in pairs(Impacto.Options) do
 			if not self.Ignore[flag] and option and type(option.Get) == "function" then
 				data[flag] = safeValue(option:Get())
 			end
@@ -6016,7 +6016,7 @@ function Google:CreateConfigManager(config)
 		end
 		for flag, value in pairs(data) do
 			if not self.Ignore[flag] then
-				Google:SetFlag(flag, value, true)
+				Impacto:SetFlag(flag, value, true)
 			end
 		end
 		self.CurrentConfig = name
@@ -6115,7 +6115,7 @@ function Google:CreateConfigManager(config)
 		return result
 	end
 
-	Google.ConfigManager = manager
+	Impacto.ConfigManager = manager
 	return manager
 end
 
@@ -6157,7 +6157,7 @@ end
 
 function Tab:CreateConfigSection(config)
 	config = config or {}
-	local manager = config.Manager or Google.ConfigManager or Google:CreateConfigManager({})
+	local manager = config.Manager or Impacto.ConfigManager or Impacto:CreateConfigManager({})
 	local section = self:CreateSection({Name = config.Name or "Configs", Icon = config.Icon or "save"})
 	local nameBox = section:CreateTextbox({Name = "Config Name", Placeholder = "default", Default = manager.CurrentConfig or "default", ClearButton = true})
 	local list = section:CreateDropdown({Name = "Saved Configs", Placeholder = "Select config", Options = manager:GetConfigList() or {}, Callback = function(value)
@@ -6208,4 +6208,4 @@ function Tab:CreateConfigSection(config)
 	return api
 end
 
-return Google
+return Impacto
